@@ -29,7 +29,7 @@ in
     remotes = [
       {
         name = "origin";
-        url = "https://github.com/dhwisema/nix-config.git";
+        url = "https://github.com/dhwisema/Yet-Another-nix-config.git";
         branches.main.name = "main";
       }
     ];
