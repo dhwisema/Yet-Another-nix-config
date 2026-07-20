@@ -14,7 +14,7 @@
     clean.enable = true;
     clean.dates = "daily";
     clean.extraArgs = "--keep 3";
-    flake = "/home/${username}/nix-config";
+    flake = "/home/${username}/Yet-Another-nix-config";
   };
   nix = {
     settings = {
