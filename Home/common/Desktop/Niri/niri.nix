@@ -119,9 +119,9 @@
       "vicinae://extensions/dagimg-dot/wifi-commander"
     ];
     "Mod+T".action.spawn = "ghostty";
-    "Mod+D".action.spawn = "vesktop";
+    "Mod+D".action.spawn = "webcord";
     "Mod+B".action.spawn = "glide";
-    "Mod+E".action.spawn = "dolphin";
+    "Mod+E".action.spawn = "nautilus";
     "Mod+Space".action.spawn = [
       "vicinae"
       "toggle"
