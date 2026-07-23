@@ -71,6 +71,8 @@
                 ./Modules/OS/Base-config.nix
                 comin.nixosModules.comin
                 ./Modules/OS/comin.nix
+                ./default.nix
+
               ]
             else
               [
@@ -162,7 +164,6 @@
         Pumat = mkNixosConfiguration {
           hostname = "Pumat";
           modules = [
-            ./default.nix
             ./Host/Pumat
           ];
         }; # dell optiplex
