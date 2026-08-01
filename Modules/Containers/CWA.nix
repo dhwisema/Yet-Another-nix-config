@@ -7,7 +7,7 @@
 {
   virtualisation.oci-containers.containers.calibre-Web-Automate = {
     pull = "newer";
-    image = "docker.io/crocodilestick/calibre-web-automated";
+    image = "ghcr.io/new-usemame/calibre-web-nextgen:latest";
    
     environment = {
       PUID = "1000";
