@@ -13,7 +13,7 @@
         ./Modules/Containers/Jellyfin.nix
         ./Modules/Containers/ARR.nix
       ]
-    else if hostname == "Stacy-Fakename" then
+    else if hostname == "Yasha" then
       [ ./Modules/Containers/CWA.nix ]
     else
       [ ];
