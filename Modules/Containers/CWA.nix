@@ -6,7 +6,7 @@
 }:
 {
   virtualisation.oci-containers.containers.calibre-Web-Automate = {
-    pull = "newer";
+    pull = "always";
     image = "ghcr.io/new-usemame/calibre-web-nextgen:latest";
    
     environment = {
