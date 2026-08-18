@@ -20,7 +20,7 @@
     mokutil
     desktop-file-utils
     lsb-release
-    mesa-utils
+    mesa
     p7zip
     cabextract
     samba
