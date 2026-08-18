@@ -26,6 +26,9 @@
     samba
     bc
     xrandr
+    pciutils
+    gettext
+    gawk
   ];
 
 }
