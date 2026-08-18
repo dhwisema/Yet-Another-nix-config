@@ -16,6 +16,16 @@
     protonup-rs
     r2modman
     prismlauncher
-  ];
+    #Because i need fusion 360
+    mokutil
+    desktop-file-utils
+    lsb-release
+    mesa-utils
+    p7zip
+    cabextract
+    samba
+    bc
+    xrandr
+  ]
 
 }
