@@ -26,6 +26,6 @@
     samba
     bc
     xrandr
-  ]
+  ];
 
 }
