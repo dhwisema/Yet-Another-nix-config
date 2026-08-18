@@ -29,6 +29,9 @@
   hardware.bluetooth.enable = true;
   services.flatpak = {
     enable = true;
+    packages = [
+      "com.usebottles.bottles"
+    ];
   };
   programs.zoxide.enable = true;
   programs.zoxide.enableFishIntegration = true;
