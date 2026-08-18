@@ -29,6 +29,8 @@
     pciutils
     gettext
     gawk
+    python3
+    wine
   ];
 
 }
