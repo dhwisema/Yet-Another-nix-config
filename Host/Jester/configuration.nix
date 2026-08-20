@@ -15,8 +15,17 @@
       driver = pkgs.libfprint-2-tod1-goodix;
     };
   };
-  boot.kernelParams = [ "amdgpu.dcdebugmask=0x10" ]; # disable psr-su
-
+  boot.kernelParams = [
+    "amdgpu.dcdebugmask=0x10"
+    "amd_iommu=on"
+    "iommu=pt"
+  ]; # disable psr-su
+  boot.kernelModules = [
+    "vfio"
+    "vfio_iommu_type1"
+    "vfio_pci"
+  ];
+  virtualisation.libvirtd.enable = true;
   systemd.services.wifi-fix = {
     enable = true;
     after = [
