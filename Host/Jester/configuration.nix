@@ -25,6 +25,9 @@
     "vfio_iommu_type1"
     "vfio_pci"
   ];
+  environment.systemPackages = [
+    pkgs.qemu
+  ];
   virtualisation.libvirtd.enable = true;
   systemd.services.wifi-fix = {
     enable = true;
