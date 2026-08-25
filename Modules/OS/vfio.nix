@@ -4,7 +4,7 @@
   lib,
   ...
 }:
-  #file descirbes setup for vfio in use on jester.
+#file descirbes setup for vfio in use on jester.
 {
   # 1. Enable virtualization & Looking Glass clientd
   virtualisation.libvirtd = {
@@ -42,10 +42,10 @@
   services.udev.extraRules = ''
     SUBSYSTEM=="kvmfr",OWNER="irrelevancy" GROUP="kvm", MODE="0660"
   '';
- 
-systemd.tmpfiles.rules = [
-  "f /dev/shm/looking-glass 0660 root kvm -"
-];
+
+  systemd.tmpfiles.rules = [
+    "f /dev/shm/looking-glass 0660 root kvm -"
+  ];
   virtualisation.libvirtd.qemu.verbatimConfig = ''
     namespaces = []
     cgroup_device_acl = [
