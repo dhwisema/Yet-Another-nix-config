@@ -76,6 +76,7 @@
               ]
             else
               [
+                ./default.nix
                 ./Modules/OS/desktop-config.nix
                 nix-flatpak.nixosModules.nix-flatpak
                 stylix.nixosModules.stylix
