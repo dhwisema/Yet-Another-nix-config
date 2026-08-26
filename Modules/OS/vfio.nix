@@ -21,6 +21,7 @@
     looking-glass-client
     virt-viewer
     qemu
+    virtiofsd
   ];
 
   # 2. Add kvmfr module for Looking Glass memory sharing
