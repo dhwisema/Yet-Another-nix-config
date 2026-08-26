@@ -71,8 +71,7 @@
   systemd.tmpfiles.rules = [
     "f /dev/shm/looking-glass 0660 root kvm -"
   ];
-
-  systemd.services.libvirtd.preStart =
+systemd.services.libvirtd.preStart =
     let
       qemuHook = pkgs.writeShellScript "qemu-hook" ''
         GUEST_NAME="$1"
@@ -84,23 +83,17 @@
         if [ "$GUEST_NAME" = "win11" ]; then
           # --- STARTUP HOOK ---
           if [ "$OPERATION" = "prepare" ] && [ "$SUB_OPER" = "begin" ]; then
-            # Unbind from host driver (amdgpu)
             if [ -d "/sys/bus/pci/drivers/amdgpu/$VIRTGPU" ]; then
               echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/unbind 2>/dev/null || true
             fi
-
-            # Bind to VFIO driver for VM passthrough
             echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/bind 2>/dev/null || true
           fi
 
           # --- TEARDOWN / STOP HOOK ---
           if [ "$OPERATION" = "release" ] && [ "$SUB_OPER" = "end" ]; then
-            # Unbind from VFIO driver
             if [ -d "/sys/bus/pci/drivers/vfio-pci/$VIRTGPU" ]; then
               echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/unbind 2>/dev/null || true
             fi
-
-            # Rebind to AMDGPU so host kernel puts card in D3cold (battery saver)
             echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/bind 2>/dev/null || true
           fi
         fi
@@ -109,7 +102,6 @@
     ''
       mkdir -p /etc/libvirt/hooks
       ln -sf ${qemuHook} /etc/libvirt/hooks/qemu
-      chmod +x /etc/libvirt/hooks/qemu
     '';
   # 4. Add your user to necessary groups
   users.users.irrelevancy.extraGroups = [
