@@ -34,7 +34,6 @@
           "/dev/vfio/vfio"
           "/dev/kvmfr0"
           "/dev/input/mice"
-          "/dev/input/event*"
         ]
       '';
     };
@@ -75,7 +74,6 @@
   boot.kernelParams = [
     "amd_iommu=on"
     "iommu=pt"
-    "kvmfr"
     "kvm.io_uring=1"
     "kvmfr.static_size_mb=64"
   ];
