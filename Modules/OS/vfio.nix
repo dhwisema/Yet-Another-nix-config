@@ -28,6 +28,7 @@
   };
   systemd.services.libvirtd.serviceConfig.TimeoutStopSec = "5s";
   systemd.services.libvirt-guests.serviceConfig.TimeoutStopSec = "5s";
+  
   programs.virt-manager.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
   environment.systemPackages = with pkgs; [
@@ -46,6 +47,8 @@
     config.boot.kernelPackages.vendor-reset
   ];
   boot.kernelModules = [
+    "kvm"
+    "kvm_amd"
     "kvmfr"
     "vfio"
     "vfio_iommu_type1"
@@ -69,11 +72,6 @@
     "f /dev/shm/looking-glass 0660 root kvm -"
   ];
 
-  system.activationScripts.virtiofsd = ''
-    mkdir -p /usr/libexec /usr/lib
-    ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/libexec/virtiofsd
-    ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/lib/virtiofsd
-  '';
   systemd.services.libvirtd.preStart =
     let
       qemuHook = pkgs.writeShellScript "qemu-hook" ''
