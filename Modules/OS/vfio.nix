@@ -36,14 +36,21 @@
     qemu
     virtiofsd
   ];
+  boot.extraModprobeConfig = ''
+    softdep vfio-pci pre: vendor-reset
+  '';
 
   # 2. Add kvmfr module for Looking Glass memory sharing
-  boot.extraModulePackages = [ config.boot.kernelPackages.kvmfr ];
+  boot.extraModulePackages = [
+    config.boot.kernelPackages.kvmfr
+    config.boot.kernelPackages.vendor-reset
+  ];
   boot.kernelModules = [
     "kvmfr"
     "vfio"
     "vfio_iommu_type1"
     "vfio_pci"
+    "vendor-reset"
   ];
   boot.kernelParams = [
     "amd_iommu=on"
@@ -62,10 +69,10 @@
   ];
 
   system.activationScripts.virtiofsd = ''
-  mkdir -p /usr/libexec /usr/lib
-  ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/libexec/virtiofsd
-  ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/lib/virtiofsd
-'';
+    mkdir -p /usr/libexec /usr/lib
+    ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/libexec/virtiofsd
+    ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/lib/virtiofsd
+  '';
 
   # 4. Add your user to necessary groups
   users.users.irrelevancy.extraGroups = [
