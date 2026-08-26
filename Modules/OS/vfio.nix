@@ -15,6 +15,8 @@
       swtpm.enable = true;
     };
   };
+  systemd.services.libvirtd.serviceConfig.TimeoutStopSec = "5s";
+  systemd.services.libvirt-guests.serviceConfig.TimeoutStopSec = "5s";
   programs.virt-manager.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
   environment.systemPackages = with pkgs; [
