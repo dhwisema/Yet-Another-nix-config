@@ -74,51 +74,66 @@
   systemd.services.libvirtd.preStart =
     let
       qemuHook = pkgs.writeShellScript "qemu-hook" ''
-                        GUEST_NAME="$1"
-                        OPERATION="$2"
-                        SUB_OPER="$3"
+        GUEST_NAME="$1"
+        OPERATION="$2"
+        SUB_OPER="$3"
 
-                        VIRTGPU="0000:03:00.0"
+        VIRTGPU="0000:03:00.0"
 
-                        if [ "$GUEST_NAME" = "win11" ]; then
-                          # --- STARTUP HOOK ---
-                          if [ "$OPERATION" = "prepare" ] && [ "$SUB_OPER" = "begin" ]; then
-                            if [ -d "/sys/bus/pci/drivers/amdgpu/$VIRTGPU" ]; then
-                              echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/unbind 2>/dev/null || true
-                            fi
-                            echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/bind 2>/dev/null || true
-                          fi
-        # --- TEARDOWN / STOP HOOK ---
-        if [ "$OPERATION" = "release" ] && [ "$SUB_OPER" = "end" ]; then
-          VIRTGPU="0000:03:00.0"
-
-          # 1. Unbind from VFIO
-          if [ -d "/sys/bus/pci/drivers/vfio-pci/$VIRTGPU" ]; then
-            echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/unbind 2>/dev/null || true
+        if [ "$GUEST_NAME" = "win11" ]; then
+          # --- STARTUP HOOK ---
+          if [ "$OPERATION" = "prepare" ] && [ "$SUB_OPER" = "begin" ]; then
+            if [ -d "/sys/bus/pci/drivers/amdgpu/$VIRTGPU" ]; then
+              echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/unbind 2>/dev/null || true
+            fi
+            # Trigger vendor-reset right before attaching to VFIO
+            if [ -e "/sys/bus/pci/devices/$VIRTGPU/reset_method" ]; then
+              echo "device_specific" > "/sys/bus/pci/devices/$VIRTGPU/reset_method" 2>/dev/null || true
+            fi
+            echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/bind 2>/dev/null || true
           fi
 
-          # 2. Force-remove the PCI device from the kernel tree (clears dirty sysfs files)
-          if [ -f "/sys/bus/pci/devices/$VIRTGPU/remove" ]; then
-            echo 1 > "/sys/bus/pci/devices/$VIRTGPU/remove"
+          # --- TEARDOWN / STOP HOOK ---
+          # Changed to stopped/end to ensure we catch the device while the hardware node is steady
+          if [ "$OPERATION" = "stopped" ] && [ "$SUB_OPER" = "end" ]; then
+            
+            # Wait loop: Ensure QEMU has fully closed the file handles to VFIO devices
+            for i in {1..10}; do
+              if ! fuser -s /dev/vfio/* 2>/dev/null; then
+                break
+              fi
+              sleep 0.5
+            done
             sleep 1
-          fi
 
-          # 3. Rescan the PCIe bus to rediscover the clean dGPU
-          echo 1 > /sys/bus/pci/rescan
-          sleep 1
+            # 1. Unbind from VFIO
+            if [ -d "/sys/bus/pci/drivers/vfio-pci/$VIRTGPU" ]; then
+              echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/unbind 2>/dev/null || true
+            fi
 
-          # 4. Rebind to AMDGPU for host power management / D3cold
-          if [ -d "/sys/bus/pci/devices/$VIRTGPU" ]; then
-            echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/bind 2>/dev/null || true
+            # 2. Force-remove the PCI device from the kernel tree
+            if [ -f "/sys/bus/pci/devices/$VIRTGPU/remove" ]; then
+              echo 1 > "/sys/bus/pci/devices/$VIRTGPU/remove"
+              sleep 2
+            fi
+
+            # 3. Rescan the PCIe bus 
+            echo 1 > /sys/bus/pci/rescan
+            sleep 1
+
+            # 4. Rebind to AMDGPU
+            if [ -d "/sys/bus/pci/devices/$VIRTGPU" ]; then
+              echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/bind 2>/dev/null || true
+            fi
           fi
         fi
-                                  fi
       '';
     in
     ''
       mkdir -p /etc/libvirt/hooks
       ln -sf ${qemuHook} /etc/libvirt/hooks/qemu
     '';
+
   # 4. Add your user to necessary groups
   users.users.irrelevancy.extraGroups = [
     "kvm"
