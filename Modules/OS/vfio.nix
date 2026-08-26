@@ -14,7 +14,15 @@
       runAsRoot = true;
       swtpm.enable = true;
       verbatimConfig = ''
-        virtiofsd = "${pkgs.virtiofsd}/bin/virtiofsd"
+            namespaces = []
+        cgroup_device_acl = [
+          "/dev/null", "/dev/full", "/dev/zero",
+          "/dev/random", "/dev/urandom",
+          "/dev/ptmx", "/dev/kvm", "/dev/rtc",
+          "/dev/hpet", "/dev/vfio/vfio", "/dev/kvmfr0"
+        ]
+
+            virtiofsd = "${pkgs.virtiofsd}/bin/virtiofsd"
       '';
     };
   };
@@ -52,15 +60,6 @@
   systemd.tmpfiles.rules = [
     "f /dev/shm/looking-glass 0660 root kvm -"
   ];
-  virtualisation.libvirtd.qemu.verbatimConfig = ''
-    namespaces = []
-    cgroup_device_acl = [
-      "/dev/null", "/dev/full", "/dev/zero",
-      "/dev/random", "/dev/urandom",
-      "/dev/ptmx", "/dev/kvm", "/dev/rtc",
-      "/dev/hpet", "/dev/vfio/vfio", "/dev/kvmfr0"
-    ]
-  '';
 
   # 4. Add your user to necessary groups
   users.users.irrelevancy.extraGroups = [
