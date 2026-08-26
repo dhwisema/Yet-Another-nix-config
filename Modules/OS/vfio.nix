@@ -13,6 +13,9 @@
       package = pkgs.qemu_kvm;
       runAsRoot = true;
       swtpm.enable = true;
+      verbatimConfig = ''
+        virtiofsd = "${pkgs.virtiofsd}/bin/virtiofsd"
+      '';
     };
   };
   systemd.services.libvirtd.serviceConfig.TimeoutStopSec = "5s";
