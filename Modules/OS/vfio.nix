@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 {
   virtualisation.libvirtd = {
@@ -34,6 +39,9 @@
       '';
     };
   };
+  boot.extraModulePackages = [
+    config.boot.kernelPackages.kvmfr
+  ];
 
   systemd.services.libvirtd.serviceConfig.TimeoutStopSec = "20s";
   systemd.services.libvirt-guests.serviceConfig.TimeoutStopSec = "20s";
@@ -56,7 +64,7 @@
   boot.kernelModules = [
     "kvm"
     "kvm_amd"
-
+    "kvmfr"
     "vfio"
     "vfio_iommu_type1"
     "vfio_pci"
@@ -283,10 +291,10 @@
       '';
 
     in
-      ''
-        mkdir -p /etc/libvirt/hooks
-        ln -sf ${qemuHook} /etc/libvirt/hooks/qemu
-      '';
+    ''
+      mkdir -p /etc/libvirt/hooks
+      ln -sf ${qemuHook} /etc/libvirt/hooks/qemu
+    '';
 
   users.users.irrelevancy.extraGroups = [
     "kvm"
