@@ -4,9 +4,9 @@
   lib,
   ...
 }:
-#file descirbes setup for vfio in use on jester.
+# File describes setup for VFIO in use on jester.
 {
-  # 1. Enable virtualization & Looking Glass clientd
+  # 1. Enable virtualization & Looking Glass client
   virtualisation.libvirtd = {
     enable = true;
     qemu = {
@@ -26,8 +26,11 @@
       '';
     };
   };
-  systemd.services.libvirtd.serviceConfig.TimeoutStopSec = "5s";
-  systemd.services.libvirt-guests.serviceConfig.TimeoutStopSec = "5s";
+
+  # Increased from 5s to 20s to prevent systemd from hard-killing (SIGKILL) 
+  # the VM during slow hybrid Windows shutdowns, which breaks vendor-reset.
+  systemd.services.libvirtd.serviceConfig.TimeoutStopSec = "20s";
+  systemd.services.libvirt-guests.serviceConfig.TimeoutStopSec = "20s";
 
   programs.virt-manager.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
@@ -58,19 +61,21 @@
   boot.kernelParams = [
     "amd_iommu=on"
     "iommu=pt"
+    "kvm.io_uring=1" # Required for modern Looking Glass/QEMU memory allocations
     "kvmfr.static_size_mb=64"
     "kvmfr"
   ];
 
   # 3. Allow qemu/kvm users to access the memory device
   services.udev.extraRules = ''
-      SUBSYSTEM=="kvmfr",OWNER="irrelevancy" GROUP="kvm", MODE="0660"
+    SUBSYSTEM=="kvmfr", OWNER="irrelevancy", GROUP="kvm", MODE="0660"
     # Enable runtime PM for AMD dGPU when bound to amdgpu driver
     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x743f", ATTR{power/control}="auto"
   '';
   systemd.tmpfiles.rules = [
     "f /dev/shm/looking-glass 0660 root kvm -"
   ];
+
   systemd.services.libvirtd.preStart =
     let
       qemuHook = pkgs.writeShellScript "qemu-hook" ''
@@ -79,6 +84,7 @@
         SUB_OPER="$3"
 
         VIRTGPU="0000:03:00.0"
+        PARENT_BRIDGE="0000:02:00.0" # Upstream PCI bridge causing the sysfs cache lock
 
         if [ "$GUEST_NAME" = "win11" ]; then
           # --- STARTUP HOOK ---
@@ -94,10 +100,9 @@
           fi
 
           # --- TEARDOWN / STOP HOOK ---
-          # Changed to stopped/end to ensure we catch the device while the hardware node is steady
           if [ "$OPERATION" = "stopped" ] && [ "$SUB_OPER" = "end" ]; then
-            
-            # Wait loop: Ensure QEMU has fully closed the file handles to VFIO devices
+
+            # Wait loop: Ensure QEMU has fully closed file handles to VFIO devices
             for i in {1..10}; do
               if ! fuser -s /dev/vfio/* 2>/dev/null; then
                 break
@@ -106,22 +111,31 @@
             done
             sleep 1
 
-            # 1. Unbind from VFIO
+            # Disable runtime power management suspension during teardown to avoid dirty states
+            if [ -e "/sys/bus/pci/devices/$VIRTGPU/power/control" ]; then
+              echo "on" > "/sys/bus/pci/devices/$VIRTGPU/power/control" 2>/dev/null || true
+            fi
+
+            # 1. Unbind the GPU from VFIO
             if [ -d "/sys/bus/pci/drivers/vfio-pci/$VIRTGPU" ]; then
               echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/unbind 2>/dev/null || true
             fi
 
-            # 2. Force-remove the PCI device from the kernel tree
+            # 2. Force-remove BOTH the GPU and its upstream parent bridge interface
+            # This completely drops the stale 'ip_discovery' and 'mem_info' sysfs nodes
             if [ -f "/sys/bus/pci/devices/$VIRTGPU/remove" ]; then
               echo 1 > "/sys/bus/pci/devices/$VIRTGPU/remove"
-              sleep 2
             fi
+            if [ -f "/sys/bus/pci/devices/$PARENT_BRIDGE/remove" ]; then
+              echo 1 > "/sys/bus/pci/devices/$PARENT_BRIDGE/remove"
+            fi
+            sleep 2
 
-            # 3. Rescan the PCIe bus 
+            # 3. Rescan the PCIe tree to re-initialize clean parent and child devices
             echo 1 > /sys/bus/pci/rescan
-            sleep 1
+            sleep 2
 
-            # 4. Rebind to AMDGPU
+            # 4. Bind the fresh, clean GPU instance back to amdgpu
             if [ -d "/sys/bus/pci/devices/$VIRTGPU" ]; then
               echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/bind 2>/dev/null || true
             fi
