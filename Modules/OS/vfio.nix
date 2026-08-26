@@ -20,15 +20,15 @@
           "/dev/null", "/dev/full", "/dev/zero",
           "/dev/random", "/dev/urandom",
           "/dev/ptmx", "/dev/kvm", "/dev/rtc",
-          "/dev/hpet", "/dev/vfio/vfio", "/dev/kvmfr0"
+          "/dev/hpet", "/dev/vfio/vfio", "/dev/kvmfr0",
+          "/dev/input/mice", "/dev/input/event*"
         ]
-        virtiofsd = "${pkgs.virtiofsd}/bin/virtiofsd"
       '';
     };
   };
   systemd.services.libvirtd.serviceConfig.TimeoutStopSec = "5s";
   systemd.services.libvirt-guests.serviceConfig.TimeoutStopSec = "5s";
-  
+
   programs.virt-manager.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
   environment.systemPackages = with pkgs; [
@@ -71,7 +71,7 @@
   systemd.tmpfiles.rules = [
     "f /dev/shm/looking-glass 0660 root kvm -"
   ];
-systemd.services.libvirtd.preStart =
+  systemd.services.libvirtd.preStart =
     let
       qemuHook = pkgs.writeShellScript "qemu-hook" ''
         GUEST_NAME="$1"
