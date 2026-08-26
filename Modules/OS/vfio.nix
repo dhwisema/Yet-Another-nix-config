@@ -61,9 +61,10 @@
 
   # 3. Allow qemu/kvm users to access the memory device
   services.udev.extraRules = ''
-    SUBSYSTEM=="kvmfr",OWNER="irrelevancy" GROUP="kvm", MODE="0660"
+      SUBSYSTEM=="kvmfr",OWNER="irrelevancy" GROUP="kvm", MODE="0660"
+    # Enable runtime PM for AMD dGPU when bound to amdgpu driver
+    ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x743f", ATTR{power/control}="auto"
   '';
-
   systemd.tmpfiles.rules = [
     "f /dev/shm/looking-glass 0660 root kvm -"
   ];
@@ -73,7 +74,45 @@
     ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/libexec/virtiofsd
     ln -sfn ${pkgs.virtiofsd}/bin/virtiofsd /usr/lib/virtiofsd
   '';
+  systemd.services.libvirtd.preStart =
+    let
+      qemuHook = pkgs.writeShellScript "qemu-hook" ''
+        GUEST_NAME="$1"
+        OPERATION="$2"
+        SUB_OPER="$3"
 
+        VIRTGPU="0000:03:00.0"
+
+        if [ "$GUEST_NAME" = "win11" ]; then
+          # --- STARTUP HOOK ---
+          if [ "$OPERATION" = "prepare" ] && [ "$SUB_OPER" = "begin" ]; then
+            # Unbind from host driver (amdgpu)
+            if [ -d "/sys/bus/pci/drivers/amdgpu/$VIRTGPU" ]; then
+              echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/unbind 2>/dev/null || true
+            fi
+
+            # Bind to VFIO driver for VM passthrough
+            echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/bind 2>/dev/null || true
+          fi
+
+          # --- TEARDOWN / STOP HOOK ---
+          if [ "$OPERATION" = "release" ] && [ "$SUB_OPER" = "end" ]; then
+            # Unbind from VFIO driver
+            if [ -d "/sys/bus/pci/drivers/vfio-pci/$VIRTGPU" ]; then
+              echo "$VIRTGPU" > /sys/bus/pci/drivers/vfio-pci/unbind 2>/dev/null || true
+            fi
+
+            # Rebind to AMDGPU so host kernel puts card in D3cold (battery saver)
+            echo "$VIRTGPU" > /sys/bus/pci/drivers/amdgpu/bind 2>/dev/null || true
+          fi
+        fi
+      '';
+    in
+    ''
+      mkdir -p /etc/libvirt/hooks
+      ln -sf ${qemuHook} /etc/libvirt/hooks/qemu
+      chmod +x /etc/libvirt/hooks/qemu
+    '';
   # 4. Add your user to necessary groups
   users.users.irrelevancy.extraGroups = [
     "kvm"
