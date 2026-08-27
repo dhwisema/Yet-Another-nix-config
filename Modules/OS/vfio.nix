@@ -12,7 +12,6 @@
     qemu = {
       package = pkgs.qemu_kvm;
       runAsRoot = true;
-
       vhostUserPackages = [
         pkgs.virtiofsd
       ];
@@ -33,7 +32,8 @@
           "/dev/hpet",
           "/dev/vfio/vfio",
           "/dev/kvmfr0",
-          "/dev/input/mice"
+          "/dev/input/by-path/platform-i8042-serio-0-event-kbd",
+        "/dev/input/by-path/platform-AMDI0010:02-event-mouse"
         ]
       '';
     };
