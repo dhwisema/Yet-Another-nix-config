@@ -43,6 +43,11 @@
     };
     initrd.systemd.enable = true;
   };
+  security.run0 = {
+    enable = true;
+ #   sudo-shim.enable = true;
+  };
+
 
   #services
   services = {
