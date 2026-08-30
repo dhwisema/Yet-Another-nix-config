@@ -10,9 +10,6 @@
     useDHCP = true;
     wireless.iwd = {
       enable = true;
-      Settings = {
-        AutoConnect = true;
-      };
     };
   };
   environment.systemPackages = with pkgs; [ impala ];
