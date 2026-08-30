@@ -5,7 +5,7 @@
 }:
 {
   networking = {
-    networking.networkmanager.enable = lib.mkForce false;
+    networkmanager.enable = lib.mkForce false;
     useNetworkd = true;
     useDHCP = true;
     wireless.iwd = {
