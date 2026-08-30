@@ -42,7 +42,11 @@
       };
     };
     initrd.systemd.enable = true;
+
   };
+  environment.systemPackages = with pkgs; [
+    polkit_gnome
+  ];
   security.run0 = {
     enable = true;
  #   sudo-shim.enable = true;
