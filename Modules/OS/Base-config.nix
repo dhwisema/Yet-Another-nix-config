@@ -53,7 +53,6 @@
   };
   security.sudo.enable = false;
 
-
   #services
   services = {
     tuned = {
