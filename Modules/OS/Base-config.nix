@@ -49,8 +49,9 @@
   ];
   security.run0 = {
     enable = true;
- #   sudo-shim.enable = true;
+    sudo-shim.enable = true;
   };
+  security.sudo.enable = false;
 
 
   #services
