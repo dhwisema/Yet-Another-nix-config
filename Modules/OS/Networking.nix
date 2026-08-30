@@ -10,9 +10,6 @@
     useDHCP = true;
     wireless.iwd = {
       enable = true;
-      Network = {
-        EnableIPv6 = true;
-      };
       Settings = {
         AutoConnect = true;
       };
