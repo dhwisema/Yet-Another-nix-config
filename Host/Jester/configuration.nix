@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   lib,
   ...
 }:
@@ -15,8 +16,9 @@
       driver = pkgs.libfprint-2-tod1-goodix;
     };
   };
-  boot.kernelParams = [ "amdgpu.dcdebugmask=0x10" ]; # disable psr-su
-
+  boot.kernelParams = [
+    "amdgpu.dcdebugmask=0x10"
+  ]; # disable psr-su
   systemd.services.wifi-fix = {
     enable = true;
     after = [
