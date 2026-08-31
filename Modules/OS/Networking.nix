@@ -14,4 +14,5 @@
     };
   };
   environment.systemPackages = with pkgs; [ impala ];
+  boot.kernelModules = ["pkcs8_key_parser"];
 }
