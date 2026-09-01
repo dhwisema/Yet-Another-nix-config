@@ -21,6 +21,10 @@
   environment.variables = {
     EDITOR = "hx";
   };
+  programs.helix = {
+    enable = true;
+    defaultEditor = true;
+  };
 
   #enable and make fish defaultUserShell
   programs.fish.enable = true;
