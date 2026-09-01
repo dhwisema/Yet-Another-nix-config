@@ -18,12 +18,9 @@
     nftables.enable = true;
     networkmanager.enable = true; # network manager default
   };
-  environment.variables = {
+  environment.SessionVariables = {
     EDITOR = "hx";
-  };
-  programs.helix = {
-    enable = true;
-    defaultEditor = true;
+    VISUAL = "hx";
   };
 
   #enable and make fish defaultUserShell
