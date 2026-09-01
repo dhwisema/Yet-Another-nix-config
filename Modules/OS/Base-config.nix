@@ -18,7 +18,7 @@
     nftables.enable = true;
     networkmanager.enable = true; # network manager default
   };
-  environment.SessionVariables = {
+  environment.sessionVariables = {
     EDITOR = "hx";
     VISUAL = "hx";
   };
