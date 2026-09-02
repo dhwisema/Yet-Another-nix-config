@@ -13,6 +13,7 @@
     jq
     fzf
     ripgrep
+    helix
   ];
   programs.yazi = {
     enable = true;
