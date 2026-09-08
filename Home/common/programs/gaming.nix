@@ -16,19 +16,9 @@
     protonup-rs
     r2modman
     prismlauncher
+    heroic
     #Because i need fusion 360
-    mokutil
-    desktop-file-utils
-    lsb-release
-    mesa
-    p7zip
-    cabextract
-    samba
-    bc
-    xrandr
     pciutils
-    gettext
-    gawk
     python3
     wine
   ];
