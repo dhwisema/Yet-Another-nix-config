@@ -3,6 +3,7 @@
   lib,
   pkgs,
   hostname,
+  role,
   ...
 }:
 {
@@ -18,8 +19,8 @@
     else if hostname == "Jester" then
       [
         ./Modules/OS/vfio.nix
-        ./Modules/OS/Networking.nix
-      ]
-    else
-      [ ];
+              ]
+    else if role == "Desktop" then
+      [ ./Modules/OS/Networking.nix]
+    else [];
 }
