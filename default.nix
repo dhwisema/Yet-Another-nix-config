@@ -14,7 +14,8 @@
         ./Modules/Containers/ARR.nix
       ]
     else if hostname == "Yasha" then
-      [ ./Modules/Containers/CWA.nix ]
+      [ ./Modules/Containers/CWA.nix
+        ./Modules/Containers/Miniflux.nix ]
     else if hostname == "Jester" then
       [
         ./Modules/OS/vfio.nix
