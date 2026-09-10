@@ -14,8 +14,6 @@
     r2modman
     prismlauncher
     pciutils
-    gettext
-    gawk
     python3
     wine
     heroic
