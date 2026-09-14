@@ -20,6 +20,7 @@
     else if hostname == "Jester" then
       [
         ./Modules/OS/vfio.nix
+        ./Modules/OS/Networking.nix
               ]
     else if role == "Desktop" then
       [ ./Modules/OS/Networking.nix]
