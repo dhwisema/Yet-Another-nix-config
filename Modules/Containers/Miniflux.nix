@@ -1,3 +1,9 @@
-{pkgs,config,lib,...}:{
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+{
   services.miniflux.enable = true;
 }

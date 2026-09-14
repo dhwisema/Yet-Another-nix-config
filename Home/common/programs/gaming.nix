@@ -17,7 +17,7 @@
     python3
     wine
     heroic
-    
+
   ];
 
 }
