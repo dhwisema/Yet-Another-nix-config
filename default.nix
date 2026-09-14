@@ -15,14 +15,16 @@
         ./Modules/Containers/ARR.nix
       ]
     else if hostname == "Yasha" then
-      [ ./Modules/Containers/CWA.nix
-        ]
+      [
+        ./Modules/Containers/CWA.nix
+      ]
     else if hostname == "Jester" then
       [
         ./Modules/OS/vfio.nix
         ./Modules/OS/Networking.nix
-              ]
+      ]
     else if role == "Desktop" then
-      [ ./Modules/OS/Networking.nix]
-    else [];
+      [ ./Modules/OS/Networking.nix ]
+    else
+      [ ];
 }
