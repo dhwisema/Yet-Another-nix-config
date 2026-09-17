@@ -14,15 +14,13 @@
     OP="$2"
 
     GPU="0000:03:00.0"
-    PARENT="0000:02:00.0"
 
     GPU_PATH="/sys/bus/pci/devices/$GPU"
     VFIO_PATH="/sys/bus/pci/drivers/vfio-pci"
     AMDGPU_PATH="/sys/bus/pci/drivers/amdgpu"
 
     log() {
-      echo "[gpu-passthrough] $*"
-      ${pkgs.systemd}/bin/logger -t gpu-passthrough -- "$*"
+      echo "[gpu-passthrough] $*" >&2
     }
 
     wait_for_unbind() {
@@ -63,7 +61,7 @@
     bind_vfio() {
       log "Preparing $GPU for VFIO"
 
-      # If amdgpu currently owns the GPU, release it.
+      # Check what currently owns the GPU.
       if [ -L "$GPU_PATH/driver" ]; then
         DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
 
@@ -71,16 +69,18 @@
           log "Unbinding $GPU from amdgpu"
           echo "$GPU" > "$AMDGPU_PATH/unbind"
           wait_for_unbind
-        elif [ "$DRIVER" != "vfio-pci" ]; then
+        elif [ "$DRIVER" = "vfio-pci" ]; then
+          log "$GPU is already bound to vfio-pci"
+        else
           log "ERROR: GPU is bound to unexpected driver: $DRIVER"
           return 1
         fi
       fi
 
-      # Make sure vfio-pci is available.
+      # Ensure vfio-pci is loaded.
       ${pkgs.kmod}/bin/modprobe vfio-pci
 
-      # Explicitly bind the device to vfio-pci.
+      # Bind the GPU to vfio-pci.
       if [ ! -L "$GPU_PATH/driver" ]; then
         log "Binding $GPU to vfio-pci"
         echo "$GPU" > "$VFIO_PATH/bind"
@@ -94,7 +94,6 @@
     bind_amdgpu() {
       log "Returning $GPU to amdgpu"
 
-      # Remove it from vfio-pci if necessary.
       if [ -L "$GPU_PATH/driver" ]; then
         DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
 
@@ -102,20 +101,20 @@
           log "Unbinding $GPU from vfio-pci"
           echo "$GPU" > "$VFIO_PATH/unbind"
           wait_for_unbind
-        elif [ "$DRIVER" != "amdgpu" ]; then
-          log "ERROR: GPU is bound to unexpected driver: $DRIVER"
-          return 1
-        else
+        elif [ "$DRIVER" = "amdgpu" ]; then
           log "$GPU is already bound to amdgpu"
           return 0
+        else
+          log "ERROR: GPU is bound to unexpected driver: $DRIVER"
+          return 1
         fi
       fi
 
-      # Rescan PCI so the device is visible to the driver again.
+      # Rescan PCI.
       log "Rescanning PCI bus"
       echo 1 > /sys/bus/pci/rescan
 
-      # Explicitly bind to amdgpu.
+      # Bind to amdgpu.
       if [ ! -L "$GPU_PATH/driver" ]; then
         log "Binding $GPU to amdgpu"
         echo "$GPU" > "$AMDGPU_PATH/bind"
@@ -126,15 +125,8 @@
       log "$GPU is now bound to amdgpu"
     }
 
-    case "$VM:$OP" in
-      win11:prepare|win11:release)
-        # These are the libvirt qemu.d lifecycle events we care about.
-        ;;
-
-      *)
-        exit 0
-        ;;
-    esac
+    # Only affect win11.
+    [ "$VM" = "win11" ] || exit 0
 
     case "$OP" in
       prepare)
@@ -144,13 +136,16 @@
       release)
         bind_amdgpu
         ;;
+
+      *)
+        exit 0
+        ;;
     esac
   '';
 
 in
 
-
-{
+  {
   virtualisation.libvirtd = {
     enable = true;
     hooks.qemu = {gpu-passthrough = gpuPassthroughHook;};
