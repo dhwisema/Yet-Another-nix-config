@@ -224,16 +224,17 @@ in
   #
 
   services.udev.extraRules = ''
-    SUBSYSTEM=="kvmfr", OWNER="irrelevancy", GROUP="kvm", MODE="0660"
+    SUBSYSTEM=="kvmfr", OWNER="irrelevancy", GROUP="qemu-libvirtd", MODE="0660"
     # Enable runtime PM for AMD dGPU when bound to amdgpu driver
     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x743f", ATTR{power/control}="auto"  '';
 
   systemd.tmpfiles.rules = [
-    "f /dev/shm/looking-glass 0660 root kvm -"
+    "f /dev/shm/looking-glass 0660 root  -"
   ];
 
   users.users.irrelevancy.extraGroups = [
     "kvm"
     "libvirtd"
+    "qemu-libvirtd"
   ];
 }
