@@ -4,64 +4,64 @@
   lib,
   ...
 }:
-  let
+let
   gpuPassthroughHook = pkgs.writeShellScript "gpu-passthrough-hook" ''
-    #!${pkgs.bash}/bin/bash
+        #!${pkgs.bash}/bin/bash
 
-    set -euo pipefail
+        set -euo pipefail
 
-    VM="$1"
-    OP="$2"
+        VM="$1"
+        OP="$2"
 
-    GPU="0000:03:00.0"
+        GPU="0000:03:00.0"
 
-    GPU_PATH="/sys/bus/pci/devices/$GPU"
-    VFIO_PATH="/sys/bus/pci/drivers/vfio-pci"
-    AMDGPU_PATH="/sys/bus/pci/drivers/amdgpu"
+        GPU_PATH="/sys/bus/pci/devices/$GPU"
+        VFIO_PATH="/sys/bus/pci/drivers/vfio-pci"
+        AMDGPU_PATH="/sys/bus/pci/drivers/amdgpu"
 
-    log() {
-      echo "[gpu-passthrough] $*" >&2
-    }
+        log() {
+          echo "[gpu-passthrough] $*" >&2
+        }
 
-    wait_for_unbind() {
-      local timeout=50
+        wait_for_unbind() {
+          local timeout=50
 
-      while [ "$timeout" -gt 0 ]; do
-        if [ ! -L "$GPU_PATH/driver" ]; then
-          return 0
-        fi
+          while [ "$timeout" -gt 0 ]; do
+            if [ ! -L "$GPU_PATH/driver" ]; then
+              return 0
+            fi
 
-        sleep 0.1
-        timeout=$((timeout - 1))
-      done
+            sleep 0.1
+            timeout=$((timeout - 1))
+          done
 
-      log "ERROR: GPU did not unbind"
-      return 1
-    }
+          log "ERROR: GPU did not unbind"
+          return 1
+        }
 
-    wait_for_bind() {
-      local expected="$1"
-      local timeout=50
+        wait_for_bind() {
+          local expected="$1"
+          local timeout=50
 
-      while [ "$timeout" -gt 0 ]; do
-        if [ -L "$GPU_PATH/driver" ]; then
-          if [ "$(basename "$(readlink "$GPU_PATH/driver")")" = "$expected" ]; then
-            return 0
-          fi
-        fi
+          while [ "$timeout" -gt 0 ]; do
+            if [ -L "$GPU_PATH/driver" ]; then
+              if [ "$(basename "$(readlink "$GPU_PATH/driver")")" = "$expected" ]; then
+                return 0
+              fi
+            fi
 
-        sleep 0.1
-        timeout=$((timeout - 1))
-      done
+            sleep 0.1
+            timeout=$((timeout - 1))
+          done
 
-      log "ERROR: GPU did not bind to $expected"
-      return 1
-    }
+          log "ERROR: GPU did not bind to $expected"
+          return 1
+        }
 
-    bind_vfio() {
+       bind_vfio() {
       log "Preparing $GPU for VFIO"
 
-      # Check what currently owns the GPU.
+      # Unbind from whatever currently owns the GPU.
       if [ -L "$GPU_PATH/driver" ]; then
         DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
 
@@ -71,38 +71,6 @@
           wait_for_unbind
         elif [ "$DRIVER" = "vfio-pci" ]; then
           log "$GPU is already bound to vfio-pci"
-        else
-          log "ERROR: GPU is bound to unexpected driver: $DRIVER"
-          return 1
-        fi
-      fi
-
-      # Ensure vfio-pci is loaded.
-      ${pkgs.kmod}/bin/modprobe vfio-pci
-
-      # Bind the GPU to vfio-pci.
-      if [ ! -L "$GPU_PATH/driver" ]; then
-        log "Binding $GPU to vfio-pci"
-        echo "$GPU" > "$VFIO_PATH/bind"
-      fi
-
-      wait_for_bind vfio-pci
-
-      log "$GPU is now bound to vfio-pci"
-    }
-
-    bind_amdgpu() {
-      log "Returning $GPU to amdgpu"
-
-      if [ -L "$GPU_PATH/driver" ]; then
-        DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
-
-        if [ "$DRIVER" = "vfio-pci" ]; then
-          log "Unbinding $GPU from vfio-pci"
-          echo "$GPU" > "$VFIO_PATH/unbind"
-          wait_for_unbind
-        elif [ "$DRIVER" = "amdgpu" ]; then
-          log "$GPU is already bound to amdgpu"
           return 0
         else
           log "ERROR: GPU is bound to unexpected driver: $DRIVER"
@@ -110,45 +78,84 @@
         fi
       fi
 
-      # Rescan PCI.
-      log "Rescanning PCI bus"
-      echo 1 > /sys/bus/pci/rescan
+      # Load vfio-pci.
+      ${pkgs.kmod}/bin/modprobe vfio-pci
 
-      # Bind to amdgpu.
-      if [ ! -L "$GPU_PATH/driver" ]; then
-        log "Binding $GPU to amdgpu"
-        echo "$GPU" > "$AMDGPU_PATH/bind"
+      # Override this specific GPU to vfio-pci.
+      log "Setting driver override to vfio-pci"
+      echo vfio-pci > "$GPU_PATH/driver_override"
+
+      # Ask the kernel to probe the device.
+      log "Probing GPU"
+      echo "$GPU" > /sys/bus/pci/drivers_probe
+
+      wait_for_bind vfio-pci
+
+      log "$GPU is now bound to vfio-pci"
+    }
+      bind_vfio() {
+      log "Preparing $GPU for VFIO"
+
+      # Unbind from whatever currently owns the GPU.
+      if [ -L "$GPU_PATH/driver" ]; then
+        DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
+
+        if [ "$DRIVER" = "amdgpu" ]; then
+          log "Unbinding $GPU from amdgpu"
+          echo "$GPU" > "$AMDGPU_PATH/unbind"
+          wait_for_unbind
+        elif [ "$DRIVER" = "vfio-pci" ]; then
+          log "$GPU is already bound to vfio-pci"
+          return 0
+        else
+          log "ERROR: GPU is bound to unexpected driver: $DRIVER"
+          return 1
+        fi
       fi
 
-      wait_for_bind amdgpu
+      # Load vfio-pci.
+      ${pkgs.kmod}/bin/modprobe vfio-pci
 
-      log "$GPU is now bound to amdgpu"
+      # Override this specific GPU to vfio-pci.
+      log "Setting driver override to vfio-pci"
+      echo vfio-pci > "$GPU_PATH/driver_override"
+
+      # Ask the kernel to probe the device.
+      log "Probing GPU"
+      echo "$GPU" > /sys/bus/pci/drivers_probe
+
+      wait_for_bind vfio-pci
+
+      log "$GPU is now bound to vfio-pci"
     }
+       }
 
-    # Only affect win11.
-    [ "$VM" = "win11" ] || exit 0
+        # Only affect win11.
+        [ "$VM" = "win11" ] || exit 0
 
-    case "$OP" in
-      prepare)
-        bind_vfio
-        ;;
+        case "$OP" in
+          prepare)
+            bind_vfio
+            ;;
 
-      release)
-        bind_amdgpu
-        ;;
+          release)
+            bind_amdgpu
+            ;;
 
-      *)
-        exit 0
-        ;;
-    esac
+          *)
+            exit 0
+            ;;
+        esac
   '';
 
 in
 
-  {
+{
   virtualisation.libvirtd = {
     enable = true;
-    hooks.qemu = {gpu-passthrough = gpuPassthroughHook;};
+    hooks.qemu = {
+      gpu-passthrough = gpuPassthroughHook;
+    };
     qemu = {
       package = pkgs.qemu_kvm;
       runAsRoot = true;
