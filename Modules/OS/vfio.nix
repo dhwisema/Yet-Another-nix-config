@@ -6,146 +6,143 @@
 }:
 let
   gpuPassthroughHook = pkgs.writeShellScript "gpu-passthrough-hook" ''
-        #!${pkgs.bash}/bin/bash
+        
+            set -euo pipefail
 
-        set -euo pipefail
+            VM="$1"
+            OP="$2"
 
-        VM="$1"
-        OP="$2"
+            GPU="0000:03:00.0"
 
-        GPU="0000:03:00.0"
+            GPU_PATH="/sys/bus/pci/devices/$GPU"
+            VFIO_PATH="/sys/bus/pci/drivers/vfio-pci"
+            AMDGPU_PATH="/sys/bus/pci/drivers/amdgpu"
 
-        GPU_PATH="/sys/bus/pci/devices/$GPU"
-        VFIO_PATH="/sys/bus/pci/drivers/vfio-pci"
-        AMDGPU_PATH="/sys/bus/pci/drivers/amdgpu"
+            log() {
+              echo "[gpu-passthrough] $*" >&2
+            }
 
-        log() {
-          echo "[gpu-passthrough] $*" >&2
-        }
+            wait_for_unbind() {
+              local timeout=50
 
-        wait_for_unbind() {
-          local timeout=50
+              while [ "$timeout" -gt 0 ]; do
+                if [ ! -L "$GPU_PATH/driver" ]; then
+                  return 0
+                fi
 
-          while [ "$timeout" -gt 0 ]; do
-            if [ ! -L "$GPU_PATH/driver" ]; then
+                sleep 0.1
+                timeout=$((timeout - 1))
+              done
+
+              log "ERROR: GPU did not unbind"
+              return 1
+            }
+
+            wait_for_bind() {
+              local expected="$1"
+              local timeout=50
+
+              while [ "$timeout" -gt 0 ]; do
+                if [ -L "$GPU_PATH/driver" ]; then
+                  if [ "$(basename "$(readlink "$GPU_PATH/driver")")" = "$expected" ]; then
+                    return 0
+                  fi
+                fi
+
+                sleep 0.1
+                timeout=$((timeout - 1))
+              done
+
+              log "ERROR: GPU did not bind to $expected"
+              return 1
+            }
+
+           bind_vfio() {
+          log "Preparing $GPU for VFIO"
+
+          # Unbind from whatever currently owns the GPU.
+          if [ -L "$GPU_PATH/driver" ]; then
+            DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
+
+            if [ "$DRIVER" = "amdgpu" ]; then
+              log "Unbinding $GPU from amdgpu"
+              echo "$GPU" > "$AMDGPU_PATH/unbind"
+              wait_for_unbind
+            elif [ "$DRIVER" = "vfio-pci" ]; then
+              log "$GPU is already bound to vfio-pci"
               return 0
+            else
+              log "ERROR: GPU is bound to unexpected driver: $DRIVER"
+              return 1
             fi
+          fi
 
-            sleep 0.1
-            timeout=$((timeout - 1))
-          done
+          # Load vfio-pci.
+          ${pkgs.kmod}/bin/modprobe vfio-pci
 
-          log "ERROR: GPU did not unbind"
-          return 1
+          # Override this specific GPU to vfio-pci.
+          log "Setting driver override to vfio-pci"
+          echo vfio-pci > "$GPU_PATH/driver_override"
+
+          # Ask the kernel to probe the device.
+          log "Probing GPU"
+          echo "$GPU" > /sys/bus/pci/drivers_probe
+
+          wait_for_bind vfio-pci
+
+          log "$GPU is now bound to vfio-pci"
         }
+        bind_amdgpu() {
+      log "Returning $GPU to amdgpu"
 
-        wait_for_bind() {
-          local expected="$1"
-          local timeout=50
-
-          while [ "$timeout" -gt 0 ]; do
-            if [ -L "$GPU_PATH/driver" ]; then
-              if [ "$(basename "$(readlink "$GPU_PATH/driver")")" = "$expected" ]; then
-                return 0
-              fi
-            fi
-
-            sleep 0.1
-            timeout=$((timeout - 1))
-          done
-
-          log "ERROR: GPU did not bind to $expected"
-          return 1
-        }
-
-       bind_vfio() {
-      log "Preparing $GPU for VFIO"
-
-      # Unbind from whatever currently owns the GPU.
       if [ -L "$GPU_PATH/driver" ]; then
         DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
 
-        if [ "$DRIVER" = "amdgpu" ]; then
-          log "Unbinding $GPU from amdgpu"
-          echo "$GPU" > "$AMDGPU_PATH/unbind"
+        if [ "$DRIVER" = "vfio-pci" ]; then
+          log "Unbinding $GPU from vfio-pci"
+          echo "$GPU" > "$VFIO_PATH/unbind"
           wait_for_unbind
-        elif [ "$DRIVER" = "vfio-pci" ]; then
-          log "$GPU is already bound to vfio-pci"
-          return 0
+        elif [ "$DRIVER" = "amdgpu" ]; then
+          log "$GPU is already bound to amdgpu"
         else
           log "ERROR: GPU is bound to unexpected driver: $DRIVER"
           return 1
         fi
       fi
 
-      # Load vfio-pci.
-      ${pkgs.kmod}/bin/modprobe vfio-pci
+      # Explicitly select amdgpu for this device.
+      log "Setting driver override to amdgpu"
+      echo amdgpu > "$GPU_PATH/driver_override"
 
-      # Override this specific GPU to vfio-pci.
-      log "Setting driver override to vfio-pci"
-      echo vfio-pci > "$GPU_PATH/driver_override"
-
-      # Ask the kernel to probe the device.
+      # Probe the device.
       log "Probing GPU"
       echo "$GPU" > /sys/bus/pci/drivers_probe
 
-      wait_for_bind vfio-pci
+      wait_for_bind amdgpu
 
-      log "$GPU is now bound to vfio-pci"
+      # Remove the override so normal PCI driver matching resumes.
+      log "Clearing driver override"
+      echo "" > "$GPU_PATH/driver_override"
+
+      log "$GPU is now bound to amdgpu"
     }
-      bind_vfio() {
-      log "Preparing $GPU for VFIO"
 
-      # Unbind from whatever currently owns the GPU.
-      if [ -L "$GPU_PATH/driver" ]; then
-        DRIVER="$(basename "$(readlink "$GPU_PATH/driver")")"
+            # Only affect win11.
+            [ "$VM" = "win11" ] || exit 0
 
-        if [ "$DRIVER" = "amdgpu" ]; then
-          log "Unbinding $GPU from amdgpu"
-          echo "$GPU" > "$AMDGPU_PATH/unbind"
-          wait_for_unbind
-        elif [ "$DRIVER" = "vfio-pci" ]; then
-          log "$GPU is already bound to vfio-pci"
-          return 0
-        else
-          log "ERROR: GPU is bound to unexpected driver: $DRIVER"
-          return 1
-        fi
-      fi
+            case "$OP" in
+              prepare)
+                bind_vfio
+                ;;
 
-      # Load vfio-pci.
-      ${pkgs.kmod}/bin/modprobe vfio-pci
+              release)
+                bind_amdgpu
+                ;;
 
-      # Override this specific GPU to vfio-pci.
-      log "Setting driver override to vfio-pci"
-      echo vfio-pci > "$GPU_PATH/driver_override"
-
-      # Ask the kernel to probe the device.
-      log "Probing GPU"
-      echo "$GPU" > /sys/bus/pci/drivers_probe
-
-      wait_for_bind vfio-pci
-
-      log "$GPU is now bound to vfio-pci"
-    }
-       }
-
-        # Only affect win11.
-        [ "$VM" = "win11" ] || exit 0
-
-        case "$OP" in
-          prepare)
-            bind_vfio
-            ;;
-
-          release)
-            bind_amdgpu
-            ;;
-
-          *)
-            exit 0
-            ;;
-        esac
+              *)
+                exit 0
+                ;;
+            esac
   '';
 
 in
