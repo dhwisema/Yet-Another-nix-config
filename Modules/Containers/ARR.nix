@@ -105,7 +105,7 @@
       VPN_LAN_NETWORK = "192.168.1.0/24";
       VPN_LAN_LEAK_ENABLED = "false";
       VPN_AUTO_PORT_FORWARD = "true";
-      VPN_HEALTHCHECK_ENABLED = "true";
+      VPN_HEALTHCHECK_ENABLED = "false";
       PRIVOXY_ENABLED = "false";
       UNBOUND_ENABLED = "false";
     };
