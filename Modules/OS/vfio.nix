@@ -229,7 +229,7 @@ in
     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x743f", ATTR{power/control}="auto"  '';
 
   systemd.tmpfiles.rules = [
-    "f /dev/shm/looking-glass 0660 root  -"
+    "f /dev/shm/looking-glass 0660 root qemu-libvirtd  -"
   ];
 
   users.users.irrelevancy.extraGroups = [
