@@ -21,6 +21,8 @@
   environment.sessionVariables = {
     EDITOR = "hx";
     VISUAL = "hx";
+    SYSTEMD_TINT_BACKGROUND = "false";
+    SYSTEMD_RUN_SHELL_PROMPT_PREFIX = "";
   };
 
   #enable and make fish defaultUserShell
@@ -69,4 +71,5 @@
   };
   networking.firewall.checkReversePath = "loose";
   system.stateVersion = "26.05";
+
 }
