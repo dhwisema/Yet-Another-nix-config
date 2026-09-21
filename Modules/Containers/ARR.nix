@@ -108,6 +108,7 @@
       VPN_HEALTHCHECK_ENABLED = "false";
       PRIVOXY_ENABLED = "false";
       UNBOUND_ENABLED = "false";
+      VPN_NAMESERVERS = "1.1.1.1,8.8.8.8";
     };
     capabilities = {
       NET_ADMIN = true;
