@@ -17,7 +17,9 @@
     python3
     wine
     heroic
-
+    nanoboyadvance
+    skyemu
+    melonds
   ];
 
 }
