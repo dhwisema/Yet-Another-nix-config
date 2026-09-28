@@ -60,7 +60,6 @@
     "audio"
     "render"
   ];
-  programs.firefox.enable = true;
 
   services.fwupd.enable = true;
   services.libinput.enable = true;
