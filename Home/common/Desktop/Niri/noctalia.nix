@@ -1,10 +1,6 @@
-{ inputs, ... }:
+{ pkgs,lib, ... }:
 {
-  imports = [
-    inputs.noctalia.homeModules.default
-  ];
-
-  programs.noctalia = {
+   programs.noctalia = {
     enable = true;
     systemd.enable = true;
 

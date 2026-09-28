@@ -16,14 +16,6 @@
     #niri.url = "github:sodiboo/niri-flake";
     # updated niri flake
     niri.url = "github:epireyn/niri-flake";
-    noctalia = {
-      url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    noctalia-greeter = {
-      url = "github:noctalia-dev/noctalia-greeter";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     waveforms.url = "github:liff/waveforms-flake";
     agenix = {
       url = "github:ryantm/agenix";
@@ -85,7 +77,6 @@
                 # ({ users.users.${username}.extraGroups = [ "plugdev" ]; })
                 nixos-hardware.nixosModules.common-cpu-amd # sets scheduling things for kernel
                 nixos-hardware.nixosModules.common-pc-ssd # ssd trim
-                noctalia-greeter.nixosModules.default
               ];
 
           diskopath = ./. + "/Host/${hostname}/disk-config.nix";

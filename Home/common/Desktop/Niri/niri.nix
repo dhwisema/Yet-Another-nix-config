@@ -7,10 +7,6 @@
 }:
 {
   imports = [
-    #  ./mako.nix
-    # ./waybar.nix
-    #./dms.nix
-    # ./swaync.nix
     ./swaylock.nix
     ./noctalia.nix
   ];
@@ -41,7 +37,7 @@
   stylix.targets.niri.enable = true;
   programs.niri.settings.spawn-at-startup = [
     { command = [ "awww-daemon" ]; }
-    { command = [ "noctalia" ]; }
+   # { command = [ "noctalia" ]; }
   ];
   programs.niri.settings.debug = {
     honor-xdg-activation-with-invalid-serial = [ ];
