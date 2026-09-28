@@ -58,11 +58,11 @@
     greetd.enableGnomeKeyring = true;
   };
   systemd.services.greetd = {
-  serviceConfig = {
-    KeyringMode = "inherit";
+    serviceConfig = {
+      KeyringMode = "inherit";
+    };
   };
-};
-services.gnome.gnome-keyring.enable = true;
+  services.gnome.gnome-keyring.enable = true;
 
   programs.noctalia = {
     enable = true;
