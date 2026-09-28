@@ -59,7 +59,7 @@
   };
   systemd.services.greetd = {
     serviceConfig = {
-      KeyringMode = "inherit";
+      KeyringMode = lib.mkForce "inherit";
     };
   };
   services.gnome.gnome-keyring.enable = true;
