@@ -54,6 +54,10 @@
         pkgs.gst_all_1.gst-libav
       ];
 
+  programs.noctalia = {
+    enable=true;
+    systemd.enable = true;
+  };
   services.displayManager.noctalia-greeter = {
     enable = true;
     
