@@ -22,7 +22,6 @@
     zoxide
     devenv
     webcord-vencord
-    google-chrome
   ];
 
   programs.zellij = {
