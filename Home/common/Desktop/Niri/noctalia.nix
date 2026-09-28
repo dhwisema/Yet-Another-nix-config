@@ -1,6 +1,6 @@
-{ pkgs,lib, ... }:
+{ pkgs, lib, ... }:
 {
-   programs.noctalia = {
+  programs.noctalia = {
     enable = true;
     systemd.enable = true;
 

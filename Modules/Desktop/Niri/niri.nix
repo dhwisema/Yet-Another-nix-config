@@ -53,13 +53,17 @@
         pkgs.gst_all_1.gst-plugins-ugly
         pkgs.gst_all_1.gst-libav
       ];
+  security.pam.services = {
+    login.enableGnomeKeyring = true;
+    greetd.enableGnomeKeyring = true;
+  };
 
   programs.noctalia = {
-    enable=true;
+    enable = true;
     systemd.enable = true;
   };
   services.displayManager.noctalia-greeter = {
     enable = true;
-    
+
   };
 }
