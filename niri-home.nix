@@ -9,6 +9,62 @@
     screenshot-path = "~/Screenshots/%Y-%m-%d %H-%M-%S.png";
     prefer-no-csd = { };
     #needed for to kdl
+
+    spawn-at-startup = [
+      { _args = [ "awww-daemon" ]; }
+      # { _args = [ "noctalia" ]; }
+    ];
+
+    environment = {
+      QT_QPA_PLATFORM = "wayland";
+      DISPLAY = ":0";
+      NIXOS_OZONE_WL = "1";
+    };
+
+    layout = {
+      gaps = 8;
+      always-center-single-column = true;
+
+      default-column-width.proportion = 0.5;
+
+      focus-ring = {
+        enable = false;
+        width = 4;
+        # inactive.color = "rgb(88 91 112)";
+        # active.color = "rgb(166 227 161)";
+      };
+
+      insert-hint.enable = true;
+      # insert-hint.display.color = "rgb(166 227 161 20%)";
+    };
+
+    cursor = {
+      hide-after-inactive-ms = 1000;
+      hide-when-typing = true;
+      size = 20;
+      theme = "BreezeX-RosePine-Linux";
+    };
+
+    window-rule._children = [
+      {
+        geometry-corner-radius._props = {
+          bottom-left = 12.0;
+          top-right = 12.0;
+          bottom-right = 12.0;
+          top-left = 12.0;
+        };
+
+        clip-to-geometry = true;
+      }
+    ];
+
+    switch-events."lid-close".action = {
+      spawn = [
+        "sh"
+        "-c"
+        "swaylock --screenshot --clock --effect-pixelate 50 & systemctl suspend"
+      ];
+    };
     _children = [
       #outputs
       {
