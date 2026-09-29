@@ -16,8 +16,7 @@
   ];
   sops.defaultSopsFile = ./secrets/secret.yaml;
   sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "~/.config/sops/age/keys.txt";
-
+  sops.age.sshKeyPaths = [ "~/.ssh/id_ed25519" ];
   #end sops
   networking = {
     hostName = hostname;
