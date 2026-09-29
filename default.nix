@@ -17,6 +17,7 @@
     else if hostname == "Yasha" then
       [
         ./Modules/Containers/CWA.nix
+        ./Modules/Containers/Miniflux.nix
       ]
     else if hostname == "Jester" then
       [
