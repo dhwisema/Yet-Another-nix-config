@@ -45,11 +45,11 @@
         theme = "BreezeX-RosePine-Linux";
       };
 
-      switch-events."lid-close".action = {
+      switch-events."lid-close" = {
         spawn = [
           "sh"
           "-c"
-          "swaylock --screenshot --clock --effect-pixelate 50 & systemctl suspend"
+          "noctalia msg session lock-and-suspend"
         ];
       };
 
@@ -287,7 +287,9 @@
         {
           window-rule._children = [
             {
-              geometry-corner-radius = {_args =[12];};
+              geometry-corner-radius = {
+                _args = [ 12 ];
+              };
               clip-to-geometry = true;
             }
           ];
