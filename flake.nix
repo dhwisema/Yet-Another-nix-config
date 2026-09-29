@@ -71,6 +71,7 @@
                 # ({ users.users.${username}.extraGroups = [ "plugdev" ]; })
                 nixos-hardware.nixosModules.common-cpu-amd # sets scheduling things for kernel
                 nixos-hardware.nixosModules.common-pc-ssd # ssd trim
+                sops-nix.nixosModules.sops
               ];
 
           diskopath = ./. + "/Host/${hostname}/disk-config.nix";
