@@ -40,8 +40,8 @@
       cursor = {
         hide-after-inactive-ms = 1000;
         hide-when-typing = true;
-        size = 20;
-        theme = "BreezeX-RosePine-Linux";
+        xcursor-size = 20;
+        xcursor-theme = "BreezeX-RosePine-Linux";
       };
 
       switch-events."lid-close" = {
