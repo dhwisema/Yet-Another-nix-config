@@ -14,11 +14,9 @@
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
     stylix.url = "github:danth/stylix";
     waveforms.url = "github:liff/waveforms-flake";
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.darwin.follows = "";
-    };
+    inputs.sops-nix.url = "github:Mic92/sops-nix";
+    inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.1.0";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -61,7 +59,7 @@
                 comin.nixosModules.comin
                 ./Modules/OS/comin.nix
                 ./default.nix
-
+                sops-nix.nixosModules.sops
               ]
             else
               [
