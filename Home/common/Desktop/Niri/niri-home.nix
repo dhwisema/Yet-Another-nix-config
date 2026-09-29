@@ -287,7 +287,7 @@
         {
           window-rule._children = [
             {
-              geometry-corner-radius._props = 12;
+              geometry-corner-radius = {_args =[12];};
               clip-to-geometry = true;
             }
           ];
