@@ -33,6 +33,7 @@
 
   security.polkit.enable = true; # polkit
   services.gnome.gnome-keyring.enable = true; # secret service
+  programs.seahorse.enable = true;
 
   hardware.brillo.enable = true; # what i use for brightness
 
