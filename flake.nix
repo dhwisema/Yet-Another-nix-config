@@ -67,8 +67,8 @@
                 ./Modules/OS/desktop-config.nix
                 nix-flatpak.nixosModules.nix-flatpak
                 stylix.nixosModules.stylix
-                waveforms.nixosModule
-                ({ users.users.${username}.extraGroups = [ "plugdev" ]; })
+               # waveforms.nixosModule
+               # ({ users.users.${username}.extraGroups = [ "plugdev" ]; })
                 nixos-hardware.nixosModules.common-cpu-amd # sets scheduling things for kernel
                 nixos-hardware.nixosModules.common-pc-ssd # ssd trim
                 sops-nix.nixosModules.sops
