@@ -14,8 +14,8 @@
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
     stylix.url = "github:danth/stylix";
     waveforms.url = "github:liff/waveforms-flake";
-    inputs.sops-nix.url = "github:Mic92/sops-nix";
-    inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.1.0";
