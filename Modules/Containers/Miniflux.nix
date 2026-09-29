@@ -6,8 +6,8 @@
 }:
 {
   sops.secrets."miniflux_admin_env"={
-    sopsFile = ../../secrets/miniflux.yaml;
-    key = "";
+    sopsFile = ../../secrets/miniflux.env;
+    format = "dotenv";
   };
   
   services.miniflux.enable = true;
