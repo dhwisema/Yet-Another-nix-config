@@ -13,25 +13,23 @@
 
     settings = {
       input = {
-  keyboard = {
-    xkb = {
-      layout = "";
-      model = "";
-      rules = "";
-      variant = "";
-    };
-    repeat-delay = 600;
-    repeat-rate = 25;
-    track-layout = "global";
-  };
-  touchpad = {
-    tap = {};
-    natural-scroll = {};
-  };
-};
-      
+        keyboard = {
+          xkb = {
+            layout = "";
+            model = "";
+            rules = "";
+            variant = "";
+          };
+          repeat-delay = 600;
+          repeat-rate = 25;
+          track-layout = "global";
+        };
+        touchpad = {
+          tap = { };
+          natural-scroll = { };
+        };
+      };
 
-      
       screenshot-path = "~/Screenshots/%Y-%m-%d %H-%M-%S.png";
       prefer-no-csd = { };
 
@@ -45,22 +43,22 @@
         gaps = 8;
         struts = {
           left = 0;
-          right =0;
+          right = 0;
           top = 0;
           bottom = 0;
         };
-        always-center-single-column = {};
+        always-center-single-column = { };
 
         default-column-width.proportion = 0.5;
         center-focused-column = "never";
-        focus-ring.off = {};
+        focus-ring.off = { };
         border = {
           width = 4;
           active-color = "#7fbbb3";
           inactive-color = "#859289";
         };
 
-        insert-hint = {};
+        insert-hint = { };
         # insert-hint.display.color = "rgb(166 227 161 20%)";
       };
 
