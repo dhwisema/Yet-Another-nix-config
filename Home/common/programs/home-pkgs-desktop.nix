@@ -23,6 +23,7 @@
     devenv
     webcord-vencord
     age
+    sops
   ];
 
   programs.zellij = {
