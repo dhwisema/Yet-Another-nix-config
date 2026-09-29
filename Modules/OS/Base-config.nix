@@ -3,6 +3,7 @@
   lib,
   config,
   hostname,
+  inputs,
   ...
 }:
 {
@@ -11,8 +12,13 @@
     ./users.nix
     ./../hardware/nvidia.nix
     ./../Programs/basepkgs.nix
+    inputs.sops-nix.nixosModules.sops
   ];
+  sops.defaultSopsFile = ./secrets/secret.yaml;
+  sops.defaultSopsFormat = "yaml";
+  sops.age.keyFile = "home.user./config/sops/age/keys.txt";
 
+  #end sops
   networking = {
     hostName = hostname;
     nftables.enable = true;
