@@ -22,6 +22,7 @@
     zoxide
     devenv
     webcord-vencord
+    age
   ];
 
   programs.zellij = {
