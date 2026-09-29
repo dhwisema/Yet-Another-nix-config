@@ -34,7 +34,7 @@
           # active.color = "rgb(166 227 161)";
         };
 
-        insert-hint.enable = true;
+        insert-hint = "on";
         # insert-hint.display.color = "rgb(166 227 161 20%)";
       };
 
