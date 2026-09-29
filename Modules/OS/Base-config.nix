@@ -16,7 +16,7 @@
   ];
   sops.defaultSopsFile = ./secrets/secret.yaml;
   sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "home.user./config/sops/age/keys.txt";
+  sops.age.keyFile = "~/.config/sops/age/keys.txt";
 
   #end sops
   networking = {
