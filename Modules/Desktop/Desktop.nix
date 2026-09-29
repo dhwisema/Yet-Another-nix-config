@@ -7,7 +7,7 @@
 {
   imports = [
     ./themeing/stylix.nix
-    ./Niri/niri.nix
+    ./Niri/niri-base.nix
     #./Gnome/default.nix
   ];
 }

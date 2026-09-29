@@ -5,7 +5,7 @@
     ./server.nix
     ./common/programs/gaming.nix
     ./common/programs/home-pkgs-desktop.nix
-    ./common/Desktop/Niri/niri.nix
+    ./common/Desktop/Niri/niri-home.nix
   ];
   stylix.enableReleaseChecks = false;
   stylix.targets.firefox.profileNames = [ "profile_0" ];

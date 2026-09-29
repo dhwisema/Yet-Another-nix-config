@@ -5,6 +5,7 @@
   ...
 }:
 {
+  imports = [./noctalia.nix];
   wayland.windowManager.niri.settings = {
     screenshot-path = "~/Screenshots/%Y-%m-%d %H-%M-%S.png";
     prefer-no-csd = { };
