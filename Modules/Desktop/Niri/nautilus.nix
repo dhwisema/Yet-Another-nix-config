@@ -21,6 +21,7 @@
     nautilus-open-any-terminal
     libheif
     libheif.out
+    adwaita-icon-theme
   ];
 
 }
