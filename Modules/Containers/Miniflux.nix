@@ -9,7 +9,7 @@
     sopsFile = ../../secrets/miniflux.env;
     format = "dotenv";
   };
-  
+  networking.firewall.trustedInterfaces = [ "tailscale0" ];
   services.miniflux = {
     enable = true;
     adminCredentialsFile = config.sops.secrets."miniflux_admin_env".path;
