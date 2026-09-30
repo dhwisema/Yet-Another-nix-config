@@ -10,6 +10,9 @@
     format = "dotenv";
   };
   
-  services.miniflux.enable = true;
-  services.miniflux.adminCredentialsFile = config.sops.secrets."miniflux_admin_env".path;
+  services.miniflux = {
+    enable = true;
+    adminCredentialsFile = config.sops.secrets."miniflux_admin_env".path;
+    config.LISTEN_ADDR = "0.0.0.0:8080";
+  };
 }
