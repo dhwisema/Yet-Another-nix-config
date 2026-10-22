@@ -58,6 +58,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINVkFiDUTkFwLQ3g13XgdN5ekhmNYo5whYn+JmjTvLYu huntingdog5forsteam@gmail.com" # beau
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPRfTaWtXV2hXANtyDFTw+4rCjJxHyRi8JCTNxloOvYM root@localhost"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID9bfJk1N+ux1chNnNU1Iyi7sKAMTWPQ+gqEyPAmdoq5 huntingdog5forsteam@gmail.com"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP970hCTcgEsksmoq6Q+Mb5Sbb1kSyR5KXFxep1Awe+j dhwisema@ipone"
       ];
     };
   };
