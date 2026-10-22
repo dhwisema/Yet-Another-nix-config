@@ -1,10 +1,14 @@
 {
   nixpkgs,
-  hostname,
+  config,
   lib,
   ...
 }:
 {
+  sops.secrets."hardcover_env"= {
+    sopsFile = ../../secrets/cwa.env;
+    format = "dotenv";
+  };
   virtualisation.oci-containers.containers.calibre-Web-Automate = {
     pull = "always";
     image = "ghcr.io/new-usemame/calibre-web-nextgen:latest";
@@ -13,7 +17,7 @@
       PUID = "1000";
       PGID = "1000";
       TZ = "America/New_York";
-      HARDCOVER_TOKEN = "";
+      HARDCOVER_TOKEN_FILE = config.sops.secrets."hardcover_env".path;
       CWA_PORT_OVERRIDE = "8083";
       NETWORK_SHARE_MODE = "false";
     };
