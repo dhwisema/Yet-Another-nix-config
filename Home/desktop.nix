@@ -11,11 +11,12 @@
   stylix.targets.firefox.profileNames = [ "profile_0" ];
   xdg.userDirs.enable = true;
   stylix.targets.helix.enable = true;
+  stylix.targets.ghostty.enable = false;
   programs.ghostty = {
     enableFishIntegration = true;
     settings = {
       shell-integration-features = true;
-      theme = "Everforst Dark Hard"
+      theme = "Everforst Dark Hard";
     };
   };
   programs.fish.enable = true;
