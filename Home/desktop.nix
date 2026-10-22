@@ -15,6 +15,7 @@
     enableFishIntegration = true;
     settings = {
       shell-integration-features = true;
+      theme = "Everforst Dark Hard"
     };
   };
   programs.fish.enable = true;
