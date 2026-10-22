@@ -18,6 +18,7 @@
       PGID = "1000";
       TZ = "America/New_York";
       HARDCOVER_TOKEN_FILE = config.sops.secrets."hardcover_env".path;
+      HARDCOVER_SYNC_ENABLED = "true";
       CWA_PORT_OVERRIDE = "8083";
       NETWORK_SHARE_MODE = "false";
     };
