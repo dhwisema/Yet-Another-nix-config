@@ -25,7 +25,7 @@
     age
     sops
   ];
-
+ # xdg.configFile."nixpkgs/config.nix".text = "{ allowUnfree = true; }";
   programs.zellij = {
     enable = true;
     settings = {

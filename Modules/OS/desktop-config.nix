@@ -14,6 +14,7 @@
 #    ./../Programs/wireshark.nix
     ./../Programs/Idevice.nix
   ];
+  environment.etc."nix/nixpkgs-config.nix".text = "{ allowUnfree = true; }";
   #because i hate life and nixos doesnt have pyside 6 working correctly yay
   virtualisation.podman = {
     enable = true;
