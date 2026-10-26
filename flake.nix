@@ -1,7 +1,7 @@
 {
   description = "combined nixos config for servers and dekstops";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
     disko = {
       # declarative disk management
       url = "github:nix-community/disko/latest";
