@@ -50,9 +50,7 @@
         efiSysMountPoint = "/boot";
       };
     };
-    initrd.systemd.enable = true;
-
-  };
+   };
   environment.systemPackages = with pkgs; [
     polkit_gnome
   ];
