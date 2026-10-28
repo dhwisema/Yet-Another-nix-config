@@ -6,7 +6,7 @@
     systemd.enable = true;
   };
   security.pam.services.greetd.enableGnomeKeyring = true;
-  services.displayManager.noctalia-greeter = {
+  services.displayManager.gdm = {
     enable = true;
   };
 }
