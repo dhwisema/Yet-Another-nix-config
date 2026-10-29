@@ -129,9 +129,10 @@
           modules = [
             ./Host/Jester/configuration.nix
             nixos-hardware.nixosModules.lenovo-thinkpad-z # i fear lenovo did not cook with this one
-            lanzaboote.nixosModules.lanzaboote
-            ./Modules/OS/SecureBoot.nix
+#            lanzaboote.nixosModules.lanzaboote
+#            ./Modules/OS/SecureBoot.nix
           ];
+          disko-use = false;
         }; # thinkpad z16
         Beau = mkNixosConfiguration {
           hostname = "Beau";
