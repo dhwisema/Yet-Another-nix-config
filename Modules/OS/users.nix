@@ -35,7 +35,7 @@
   #   }
   # ];
   users = {
-    mutableUsers = if role == "server" then false else true;
+    mutableUsers = false;
     users.${"irrelevancy"} = {
       hashedPassword = "$y$j9T$tsD8VLtqLhL5a/OIA7Txb1$bpOz8kmMODZVSPITsRMjhKd59m2Wvvhhh7w/ElmFdn1";
       isNormalUser = true;
@@ -54,7 +54,7 @@
             "libvirtd"
           ];
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWcxSaxxRfizmQh2zdrRCt0Ic+eVKOc2w+nsQOVBh+e irrelevancy@Jester" # jester
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOYRUmdnul4rT/X5QgRHfuN0o+5QLoVjxXB43ba473+x irrelevancy@Jester"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINVkFiDUTkFwLQ3g13XgdN5ekhmNYo5whYn+JmjTvLYu huntingdog5forsteam@gmail.com" # beau
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPRfTaWtXV2hXANtyDFTw+4rCjJxHyRi8JCTNxloOvYM root@localhost"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID9bfJk1N+ux1chNnNU1Iyi7sKAMTWPQ+gqEyPAmdoq5 huntingdog5forsteam@gmail.com"
