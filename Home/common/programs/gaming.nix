@@ -10,7 +10,7 @@
     wine
     steam-run
     steam
-    protonup-rs
+    protonup-ng
     pciutils
     python3
     wine
