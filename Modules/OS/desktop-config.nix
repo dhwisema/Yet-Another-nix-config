@@ -17,7 +17,7 @@
     inputs.nix-flatpak.nixosModules.nix-flatpak
     inputs.stylix.nixosModules.stylix
     inputs.nixos-hardware.nixosModules.common-cpu-amd
-    ];
+  ];
   environment.etc."nix/nixpkgs-config.nix".text = "{ allowUnfree = true; }";
   #because i hate life and nixos doesnt have pyside 6 working correctly yay
   virtualisation.podman = {
