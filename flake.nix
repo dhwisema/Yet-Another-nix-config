@@ -35,6 +35,7 @@
     inputs:
     with inputs; # weird syntax thing.... i think its neat apparantly this would work but,,, 2026 01 06 -> i fear i understand that this way causes me pain
     let
+      inherit (nixpkgs) lib;
       username = "irrelevancy";
       mkNixosConfiguration =
         {
