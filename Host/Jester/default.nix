@@ -6,7 +6,7 @@
   ...
 }:
 {
-  import = [ inputs.nixos-hardware.nixosModules.lenovo-thinkpad-z ]; # lenowo didnt cook
+  imports = [ inputs.nixos-hardware.nixosModules.lenovo-thinkpad-z ]; # lenowo didnt cook
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   services.tlp.enable = pkgs.lib.mkForce false;
 
