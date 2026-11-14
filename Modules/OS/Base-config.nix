@@ -10,7 +10,6 @@
   imports = [
     ./nix-config.nix
     ./users.nix
-    ./../hardware/nvidia.nix
     ./../Programs/basepkgs.nix
     inputs.sops-nix.nixosModules.sops
   ];
