@@ -104,22 +104,27 @@
         Jester = mkNixosConfiguration {
           hostname = "Jester";
           role = "Desktop";
+          modules = [ ];
         }; # thinkpad z16
         Beau = mkNixosConfiguration {
           hostname = "Beau";
           role = "Desktop";
+          modules = [ ];
         }; # 7800x3d gaming pc
         Stacy-Fakename = mkNixosConfiguration {
           disko-use = true;
           hostname = "Stacy-Fakename";
           system = "aarch64-linux";
+          modules = [ ];
         }; # oracle cloud box
         Pumat = mkNixosConfiguration {
           disko-use = true;
           hostname = "Pumat";
+          modules = [ ];
         }; # dell optiplex
         Yasha = mkNixosConfiguration {
           hostname = "Yasha";
+          modules = [ ];
         }; # lenovo mq90
       };
     };
