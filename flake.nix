@@ -43,7 +43,7 @@
           role ? "server",
           disko-use ? false,
           hostname,
-          modules ? [],
+          modules ? [ ],
         }@args-os:
         let
           defaultconf =
@@ -81,7 +81,7 @@
           inherit system specialArgs;
           modules = [
             # (specialArgs)
-            home-manager.nixosModules.home-manager
+            home-manager.nixosModules.home-manager # todo move this into a seperate file for the love of god
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
