@@ -55,18 +55,14 @@
             else
               [
                 ./Modules/OS/desktop-config.nix
-                stylix.nixosModules.stylix
-                nixos-hardware.nixosModules.common-cpu-amd # sets scheduling things for kernel
-                nixos-hardware.nixosModules.common-pc-ssd # ssd trim
               ];
           diskopath = ./. + "/Host/${hostname}/disk-config.nix";
           hwconf = ./. + "/Host/${hostname}/hardware-configuration.nix";
-          config-nix = ./. + "/Host/${hostname}";
+          default-nix = ./. + "/Host/${hostname}";
           diskoconf = lib.optionals disko-use [
             disko.nixosModules.disko
             diskopath
           ];
-          default-hm = if role == "server" then [ ./Home/server.nix ] else [ ./Home/desktop.nix ];
           specialArgs = {
             inherit
               inputs
@@ -81,18 +77,8 @@
           inherit system specialArgs;
           modules = [
             # (specialArgs)
-            home-manager.nixosModules.home-manager # todo move this into a seperate file for the love of god
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "hm-backup";
-              home-manager.extraSpecialArgs = { inherit inputs username; };
-              home-manager.users.${username} = {
-                imports = default-hm;
-              };
-            }
             hwconf
-            config-nix
+            default-nix
             sops-nix.nixosModules.sops
           ]
           ++ modules
