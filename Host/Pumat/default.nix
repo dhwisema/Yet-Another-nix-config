@@ -20,7 +20,7 @@
     LIBVA_DRIVER_NAME = "iHD";
   };
   imports = [
-    ./Modules/Containers/Jellyfin.nix
-    ./Modules/Containers/ARR.nix
+    ../../Modules/Containers/Jellyfin.nix
+    ../../Modules/Containers/ARR.nix
   ];
 }

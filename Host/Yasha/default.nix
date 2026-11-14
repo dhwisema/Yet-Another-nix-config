@@ -2,8 +2,8 @@
 {
 
   imports = [
-    ./Modules/Containers/CWA.nix
-    ./Modules/Containers/Miniflux.nix
+    ../../Modules/Containers/CWA.nix
+    ../../Modules/Containers/Miniflux.nix
   ];
   fileSystems = {
     "/".options = [
