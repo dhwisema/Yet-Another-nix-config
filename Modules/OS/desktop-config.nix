@@ -13,6 +13,7 @@
     ./Base-config.nix
     ./../Desktop/Desktop.nix
     ./../Programs/Idevice.nix
+    ./Networking.nix
     inputs.nix-flatpak.nixosModules.nix-flatpak
     inputs.stylix.nixosModules.stylix
     inputs.nixos-hardware.nixosModules.common-cpu-amd
