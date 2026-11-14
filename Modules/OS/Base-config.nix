@@ -11,7 +11,9 @@
     ./nix-config.nix
     ./users.nix
     ./../Programs/basepkgs.nix
+    ../../Home/hm.nix
     inputs.sops-nix.nixosModules.sops
+    inputs.nixos-hardware.nixosModules.common-pc-ssd
   ];
   sops.defaultSopsFile = ./secrets/secret.yaml;
   sops.defaultSopsFormat = "yaml";
