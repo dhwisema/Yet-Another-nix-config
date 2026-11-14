@@ -5,7 +5,7 @@
   ...
 }:
 {
-  sops.secrets."hardcover_env"= {
+  sops.secrets."hardcover_env" = {
     sopsFile = ../../secrets/cwa.env;
     format = "dotenv";
   };

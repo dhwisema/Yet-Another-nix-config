@@ -5,14 +5,15 @@
   hostname,
   username,
   options,
+  inputs,
   ...
 }:
 {
   imports = [
     ./Base-config.nix
     ./../Desktop/Desktop.nix
-#    ./../Programs/wireshark.nix
     ./../Programs/Idevice.nix
+    inputs.nix-flatpak.nixosModules.nix-flatpak
   ];
   environment.etc."nix/nixpkgs-config.nix".text = "{ allowUnfree = true; }";
   #because i hate life and nixos doesnt have pyside 6 working correctly yay

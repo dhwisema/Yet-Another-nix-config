@@ -23,7 +23,9 @@ let
   rebootScript = "${rebootScriptDerivation}/bin/${script-name}";
 in
 {
-
+  imports = [
+    inputs.comin.nixosModules.comin
+  ];
   services.comin = {
     enable = true;
     remotes = [

@@ -5,7 +5,7 @@
   ...
 }:
 {
-  sops.secrets."miniflux_admin_env"={
+  sops.secrets."miniflux_admin_env" = {
     sopsFile = ../../secrets/miniflux.env;
     format = "dotenv";
   };

@@ -1,5 +1,10 @@
 { config, lib, ... }:
 {
+
+  imports = [
+    ./Modules/Containers/CWA.nix
+    ./Modules/Containers/Miniflux.nix
+  ];
   fileSystems = {
     "/".options = [
       "compress=zstd"
@@ -17,7 +22,7 @@
       "compress=zstd"
       "noatime"
     ];
-  };
+  }; # girl what the fuck
 
   # swapDevices = [ { device = "/swap/swapfile"; } ];
 

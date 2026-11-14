@@ -26,7 +26,7 @@
     sops
     halloy
   ];
- # xdg.configFile."nixpkgs/config.nix".text = "{ allowUnfree = true; }";
+  # xdg.configFile."nixpkgs/config.nix".text = "{ allowUnfree = true; }";
   programs.zellij = {
     enable = true;
     settings = {

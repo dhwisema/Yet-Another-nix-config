@@ -16,11 +16,6 @@
     waveforms.url = "github:liff/waveforms-flake";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     comin = {
       url = "github:nlewo/comin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,7 +27,6 @@
     };
     glide-browser = {
       url = "github:glide-browser/glide.nix";
-      # optionally: follow your flake's inputs
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
@@ -46,8 +40,7 @@
         {
           system ? "x86_64-linux",
           role ? "server",
-          nvidia ? false,
-          disko-use ? true,
+          disko-use ? false,
           hostname,
           modules,
         }@args-os:
@@ -56,44 +49,29 @@
             if role == "server" then
               [
                 ./Modules/OS/Base-config.nix
-                comin.nixosModules.comin
                 ./Modules/OS/comin.nix
-                ./default.nix
-                sops-nix.nixosModules.sops
               ]
             else
               [
-                ./default.nix
                 ./Modules/OS/desktop-config.nix
-                nix-flatpak.nixosModules.nix-flatpak
                 stylix.nixosModules.stylix
-               # waveforms.nixosModule
-               # ({ users.users.${username}.extraGroups = [ "plugdev" ]; })
                 nixos-hardware.nixosModules.common-cpu-amd # sets scheduling things for kernel
                 nixos-hardware.nixosModules.common-pc-ssd # ssd trim
-                sops-nix.nixosModules.sops
               ];
-
           diskopath = ./. + "/Host/${hostname}/disk-config.nix";
           hwconf = ./. + "/Host/${hostname}/hardware-configuration.nix";
-          diskoconf =
-            if disko-use == true then
-              [
-                disko.nixosModules.disko
-                diskopath
-              ]
-            else
-              [ ];
+          config-nix = ./. + "/Host/${hostname}";
+          diskoconf = lib.optionals disko-use [
+            disko.nixosModules.disko
+            diskopath
+          ];
           default-hm = if role == "server" then [ ./Home/server.nix ] else [ ./Home/desktop.nix ];
-
           specialArgs = {
-
             inherit
               inputs
               username
               hostname
               role
-              nvidia
               ;
           }
           // args-os;
@@ -104,17 +82,17 @@
             # (specialArgs)
             home-manager.nixosModules.home-manager
             {
-
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hm-backup";
               home-manager.extraSpecialArgs = { inherit inputs username; };
-
               home-manager.users.${username} = {
                 imports = default-hm;
               };
             }
             hwconf
+            config-nix
+            sops-nix.nixosModules.sops
           ]
           ++ modules
           ++ defaultconf
@@ -126,39 +104,22 @@
         Jester = mkNixosConfiguration {
           hostname = "Jester";
           role = "Desktop";
-          modules = [
-            ./Host/Jester/configuration.nix
-            nixos-hardware.nixosModules.lenovo-thinkpad-z # i fear lenovo did not cook with this one
-#            lanzaboote.nixosModules.lanzaboote
-#            ./Modules/OS/SecureBoot.nix
-          ];
-          disko-use = false;
         }; # thinkpad z16
         Beau = mkNixosConfiguration {
           hostname = "Beau";
           role = "Desktop";
-          disko-use = false;
-          nvidia = true;
-          modules = [ ./Host/Beau/configuration.nix ];
         }; # 7800x3d gaming pc
         Stacy-Fakename = mkNixosConfiguration {
+          disko-use = true;
           hostname = "Stacy-Fakename";
           system = "aarch64-linux";
-          modules = [
-            #./Modules/Containers/mc.nix
-            ./Host/Stacy-Fakename/configuration.nix
-          ];
         }; # oracle cloud box
         Pumat = mkNixosConfiguration {
+          disko-use = true;
           hostname = "Pumat";
-          modules = [
-            ./Host/Pumat
-          ];
         }; # dell optiplex
         Yasha = mkNixosConfiguration {
-          disko-use = false;
           hostname = "Yasha";
-          modules = [ ./Host/Yasha ];
         }; # lenovo mq90
       };
     };

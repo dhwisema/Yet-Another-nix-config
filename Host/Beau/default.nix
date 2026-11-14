@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-    ./hardware-configureation.nix
+    ../../Modules/hardware/nvidia.nix
   ];
 
   boot.kernelPackages = pkgs.linuxPackages;
