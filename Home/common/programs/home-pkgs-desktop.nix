@@ -17,7 +17,6 @@
     nil
     signal-desktop
     element-desktop
-    obsidian
     nixd
     zoxide
     devenv
