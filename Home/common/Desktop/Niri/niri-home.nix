@@ -81,10 +81,6 @@
         "Mod+Shift+Slash".show-hotkey-overlay = { };
 
         "Mod+A".spawn = [ "pavucontrol" ];
-        "Mod+N".spawn = [
-          "vicinae"
-          "vicinae://extensions/dagimg-dot/wifi-commander"
-        ];
         "Mod+T" = {
           _props.hotkey-overlay-title = "Open a Terminal";
           spawn = [ "ghostty" ];
@@ -98,12 +94,11 @@
         ];
         "Mod+Shift+Space".spawn = [
           "vicinae"
-          "vicinae://extensions/vicinae/wm/switch-windows"
+          "vicinae://launch/wm/switch-windows"
         ];
         "Mod+Shift+P".spawn = [
           "vicinae"
-          "vicinae://extensions/vicinae/power"
-        ];
+          "vicinae://launch/power/"        ];
 
         # Volume
         "XF86AudioRaiseVolume" = {
