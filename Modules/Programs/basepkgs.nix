@@ -14,6 +14,8 @@
     fzf
     ripgrep
     helix
+    yazi
+    eza
    ];
   programs.yazi = {
     enable = true;
