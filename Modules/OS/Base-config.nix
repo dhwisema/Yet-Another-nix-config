@@ -6,6 +6,9 @@
   inputs,
   ...
 }:
+  let
+   colors = (import ../../colors.nix).colors;
+  in
 {
   imports = [
     ./nix-config.nix
@@ -57,14 +60,28 @@
   environment.systemPackages = with pkgs; [
     polkit_gnome
   ];
-  security.run0 = {
-    enable = true;
-    sudo-shim.enable = true;
-  };
-  security.sudo.enable = false;
+  #remove sudo cause a certain eldritch space entity told me to do so.
+  security = {
+    run0 ={
+      enable = true;
+      sudo-shim.enable = true;
+    };
+    sudo.enable = false;
+    wrappers = {
+      # mount/umount are only relevant for non-root users when an fstab entry
+      # has user/group information
+      mount.enable = false;
+      umount.enable = false;
 
+      # redundant with run0 for privilege escalation
+      newgrp.enable = false;
+      sg.enable = false;
+      su.enable = false;
+    };
+  };
   #services
   services = {
+    bootvine.enable = true;
     tuned = {
       # tuned powermanagement
       enable = true;
@@ -76,7 +93,36 @@
     tailscale.enable = true; # tailscale
     tailscale.openFirewall = true;
   };
-  networking.firewall.checkReversePath = "loose";
+  networking.firewall.checkReversePath = "loose"; #tailscale something
   system.stateVersion = "26.05";
 
+  #limit journal size
+  services.journald.settings.Journal = {
+    SystemMaxUse = "100M";
+    RuntimeMaxUse = "50M";
+    SystemMaxFileSize = "50M";
+  };
+  #shell scripts begone
+  system.nixos-init.enable = true;
+  #run shell check during build to prevent bad shell
+  # "bad shell looks like? <-irrelevancy " " shrug." <- eldritch space creature
+  systemd.enableStrictShellChecks = lib.mkDefault true;
+  console.colors = [
+    "${colors.base00}"
+    "${colors.base01}"
+    "${colors.base02}"
+    "${colors.base03}"
+    "${colors.base04}"
+    "${colors.base05}"
+    "${colors.base06}"
+    "${colors.base07}"
+    "${colors.base08}"
+    "${colors.base09}"
+    "${colors.base0A}"
+    "${colors.base0B}"
+    "${colors.base0C}"
+    "${colors.base0D}"
+    "${colors.base0E}"
+    "${colors.base0F}"  
+  ];
 }
