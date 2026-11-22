@@ -11,7 +11,7 @@
   services.openssh = {
     enable = true;
     settings = {
-      PermitRootLogin = "no";
+      PermitRootLogin = false;
       PasswordAuthentication = false;
     };
   };
@@ -20,23 +20,9 @@
   #lowkey i think i can close this now because tailscale...
   networking.firewall.allowedTCPPorts = [ 22 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
-
-  # Enable passwordless sudo.
-  # wait this is lowkey extra bad wtf.
-  # security.sudo.extraRules = [
-  #   {
-  #     users = [ username ];
-  #     commands = [
-  #       {
-  #         command = "ALL";
-  #         options = if role == "server" then [ "NOPASSWD" ] else [];
-  #       }
-  #     ];
-  #   }
-  # ];
   users = {
     mutableUsers = false;
-    users.${"irrelevancy"} = {
+    users.${username} = {
       hashedPassword = "$y$j9T$tsD8VLtqLhL5a/OIA7Txb1$bpOz8kmMODZVSPITsRMjhKd59m2Wvvhhh7w/ElmFdn1";
       isNormalUser = true;
       extraGroups =
@@ -51,7 +37,6 @@
             "wheel"
             "plugdev"
             "dialout"
-            "libvirtd"
           ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOYRUmdnul4rT/X5QgRHfuN0o+5QLoVjxXB43ba473+x irrelevancy@Jester"
@@ -64,4 +49,3 @@
   };
 }
 
-# "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHNqgtA5a1QhGLKCnDciSLlbgUmNl5KYof46nrNirLK0 root@localhost"
