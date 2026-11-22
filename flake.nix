@@ -12,7 +12,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
-    stylix.url = "github:danth/stylix";
     waveforms.url = "github:liff/waveforms-flake";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -21,10 +20,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
-    vicinae-extensions = {
-      url = "github:vicinaehq/extensions";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     glide-browser = {
       url = "github:glide-browser/glide.nix";
       inputs.nixpkgs.follows = "nixpkgs";
