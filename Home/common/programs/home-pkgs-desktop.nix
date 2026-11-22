@@ -18,8 +18,6 @@
     signal-desktop
     element-desktop
     nixd
-    zoxide
-    devenv
     webcord-vencord
     age
     sops
