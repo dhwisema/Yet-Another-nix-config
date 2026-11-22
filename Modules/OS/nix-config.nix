@@ -10,17 +10,17 @@
   nix.package = pkgs.lixPackageSets.latest.lix;
 
   nix = {
-      gc = {
-        automatic = true;
-        dates = "daily";
-        options = "--delete-older-than 14d";
-      };
+    gc = {
+      automatic = true;
+      dates = "daily";
+      options = "--delete-older-than 14d";
+    };
 
-     #kill with fire
+    #kill with fire
     channel.enable = false;
     settings = {
       use-xdg-base-directories = true;
-      http3=true;
+      http3 = true;
       log-format = "multiline-with-logs";
       #remove rce vector allegedly <- space entity
       accept-flake-config = false;

@@ -98,7 +98,8 @@
         ];
         "Mod+Shift+P".spawn = [
           "vicinae"
-          "vicinae://launch/power/"        ];
+          "vicinae://launch/power/"
+        ];
 
         # Volume
         "XF86AudioRaiseVolume" = {

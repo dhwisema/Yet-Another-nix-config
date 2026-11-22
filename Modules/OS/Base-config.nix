@@ -6,9 +6,9 @@
   inputs,
   ...
 }:
-  let
-   colors = (import ../../colors.nix).colors;
-  in
+let
+  colors = (import ../../colors.nix).colors;
+in
 {
   imports = [
     ./nix-config.nix
@@ -62,7 +62,7 @@
   ];
   #remove sudo cause a certain eldritch space entity told me to do so.
   security = {
-    run0 ={
+    run0 = {
       enable = true;
       sudo-shim.enable = true;
     };
@@ -93,7 +93,7 @@
     tailscale.enable = true; # tailscale
     tailscale.openFirewall = true;
   };
-  networking.firewall.checkReversePath = "loose"; #tailscale something
+  networking.firewall.checkReversePath = "loose"; # tailscale something
   system.stateVersion = "26.05";
 
   #limit journal size
@@ -123,6 +123,6 @@
     "${colors.base0C}"
     "${colors.base0D}"
     "${colors.base0E}"
-    "${colors.base0F}"  
+    "${colors.base0F}"
   ];
 }

@@ -32,4 +32,4 @@
       copy_command = "wl-copy";
     };
   };
-  }
+}
