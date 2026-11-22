@@ -7,11 +7,7 @@
     ./common/programs/home-pkgs-desktop.nix
     ./common/Desktop/Niri/niri-home.nix
   ];
-  stylix.enableReleaseChecks = false;
-  stylix.targets.firefox.profileNames = [ "profile_0" ];
   xdg.userDirs.enable = true;
-  stylix.targets.helix.enable = true;
-  stylix.targets.ghostty.enable = false;
   programs.ghostty = {
     enableFishIntegration = true;
     settings = {
