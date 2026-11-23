@@ -9,7 +9,7 @@
     enable = true;
     defaultEditor = true;
     settings = {
-      # theme = "everforest_dark";
+      theme = "everforest_dark";
       editor = {
         auto-save = {
           focus-lost = true;
