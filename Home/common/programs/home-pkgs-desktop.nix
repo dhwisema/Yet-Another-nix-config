@@ -10,6 +10,7 @@
     ./ghostty.nix
     ./helix.nix
     ./zellij.nix
+    ./halloy.nix
   ];
   home.packages = with pkgs; [
     onlyoffice-desktopeditors
