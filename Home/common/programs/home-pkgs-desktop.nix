@@ -5,12 +5,16 @@
   ...
 }:
 {
-  imports = [ ./glide.nix ];
+  imports = [
+    ./glide.nix
+    ./ghostty.nix
+    ./helix.nix
+    ./zellij.nix
+  ];
   home.packages = with pkgs; [
     onlyoffice-desktopeditors
     smplayer
     foliate
-    ghostty
     nixfmt
     nixfmt-tree
     kicad
