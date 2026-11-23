@@ -4,6 +4,7 @@
     enableFishIntegration = true;
     settings = {
       theme = "everforest-dark";
+      copy_commad = "wl-copy";
     };
   };
 }
