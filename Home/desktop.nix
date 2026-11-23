@@ -6,6 +6,7 @@
     ./common/programs/gaming.nix
     ./common/programs/home-pkgs-desktop.nix
     ./common/Desktop/Niri/niri-home.nix
+    ./common/Desktop/themeing/gtk.nix
   ];
   xdg.userDirs.enable = true;
   programs.fish.enable = true;
