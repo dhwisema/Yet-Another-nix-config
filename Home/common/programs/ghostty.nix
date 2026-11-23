@@ -12,7 +12,7 @@
     settings = {
       theme = "noctalia";
       shell-integration-features = true;
-      window-decoration = "client";
+      # window-decoration = "client";
       font-family = "FiraCode Nerd Font";
     };
   };
