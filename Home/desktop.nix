@@ -8,13 +8,6 @@
     ./common/Desktop/Niri/niri-home.nix
   ];
   xdg.userDirs.enable = true;
-  programs.ghostty = {
-    enableFishIntegration = true;
-    settings = {
-      shell-integration-features = true;
-      theme = "Everforst Dark Hard";
-    };
-  };
   programs.fish.enable = true;
   programs.zoxide.enable = true;
   programs.zoxide.enableFishIntegration = true;

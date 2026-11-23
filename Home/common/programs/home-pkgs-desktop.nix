@@ -29,10 +29,4 @@
     halloy
   ];
   # xdg.configFile."nixpkgs/config.nix".text = "{ allowUnfree = true; }";
-  programs.zellij = {
-    enable = true;
-    settings = {
-      copy_command = "wl-copy";
-    };
-  };
 }
