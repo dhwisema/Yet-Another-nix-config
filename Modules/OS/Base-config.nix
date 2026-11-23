@@ -102,8 +102,6 @@ in
     RuntimeMaxUse = "50M";
     SystemMaxFileSize = "50M";
   };
-  #shell scripts begone
-  system.nixos-init.enable = true;
   #run shell check during build to prevent bad shell
   # "bad shell looks like? <-irrelevancy " " shrug." <- eldritch space creature
   systemd.enableStrictShellChecks = lib.mkDefault true;
