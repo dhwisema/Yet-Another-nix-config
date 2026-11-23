@@ -10,7 +10,7 @@
     enableFishIntegration = true;
     systemd.enable = true;
     settings = {
-      theme = "everforest-dark-hard";
+      theme = "Everforest Dark Hard";
       shell-integration-features = true;
       window-decoration = "client";
       font-family = "FiraCode Nerd Font";
