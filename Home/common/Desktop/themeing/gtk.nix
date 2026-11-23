@@ -14,8 +14,8 @@
       package = pkgs.everforest-gtk-theme;
     };
     gtk4 = {
-      name = "Everforest-dark";
-      package = pkgs.everforest-gtk-theme;
+      theme.name = "Everforest-dark";
+      theme.package = pkgs.everforest-gtk-theme;
     };
     iconTheme = {
       name = "Adwaita";
