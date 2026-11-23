@@ -2,6 +2,7 @@
   imports = [
     ./nautilus.nix
     ./noctalia-base.nix
+    ../themeing/theme.nix
   ]; # required by gnome
 
   programs.niri.enable = true; # acutally enable niri
