@@ -65,8 +65,8 @@
       cursor = {
         hide-after-inactive-ms = 1000;
         hide-when-typing = true;
-        xcursor-size = 20;
-        xcursor-theme = "BreezeX-RosePine-Linux";
+        xcursor-size = 24;
+        xcursor-theme = "everforest-cursors";
       };
 
       switch-events."lid-close" = {
@@ -89,16 +89,19 @@
         "Mod+B".spawn = [ "glide" ];
         "Mod+E".spawn = [ "nautilus" ];
         "Mod+Space".spawn = [
-          "vicinae"
-          "toggle"
+          "sh"
+          "-c"
+          "noctalia msg panel-toggle launcher"
         ];
         "Mod+Shift+Space".spawn = [
-          "vicinae"
-          "vicinae://launch/wm/switch-windows"
+          "sh"
+          "-c"
+          "noctalia msg panel-toggle launcher /win"
         ];
         "Mod+Shift+P".spawn = [
-          "vicinae"
-          "vicinae://launch/power/"
+          "sh"
+          "-c"
+          "noctalia msg panel-toggle session"
         ];
 
         # Volume
