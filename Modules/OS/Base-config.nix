@@ -57,9 +57,9 @@ in
       };
     };
   };
-  environment.systemPackages = with pkgs; [
-    polkit_gnome
-  ];
+  # environment.systemPackages = with pkgs; [
+  #   polkit_gnome
+  # ];
   #remove sudo cause a certain eldritch space entity told me to do so.
   security = {
     run0 = {

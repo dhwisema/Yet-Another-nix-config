@@ -7,6 +7,7 @@
     x11.enable = true;
     package = pkgs.everforest-cursors;
     name = "everforest-cursors";
+    size = 24;
   };
   gtk = {
     enable = true;
@@ -23,7 +24,7 @@
       package = pkgs.adwaita-icon-theme;
     };
     cursorTheme = {
-      name = "everforest";
+      name = "everforest-cursors";
       package = pkgs.everforest-cursors;
     };
   };
